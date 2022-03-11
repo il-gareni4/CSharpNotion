@@ -20,7 +20,8 @@
             { typeof(Entities.CalloutBlock), "callout" },
             { typeof(Entities.DividerBlock), "divider" },
             { typeof(Entities.CodeBlock), "code" },
-            { typeof(Entities.AliasBlock), "alias" }
+            { typeof(Entities.AliasBlock), "alias" },
+            { typeof(Entities.EquationBlock), "equation" }
         };
 
         public static readonly Dictionary<string, Type> TypeToBlock =
