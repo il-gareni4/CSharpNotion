@@ -55,5 +55,7 @@ namespace CSharpNotion.Api.General
 
         [JsonPropertyName("alias_pointer")]
         public Pointer? AliasPointer { get; set; }
+
+        public bool? Toggleable { get; set; }
     }
 }
