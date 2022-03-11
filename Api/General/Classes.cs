@@ -45,8 +45,12 @@ namespace CSharpNotion.Api.General
 
         [JsonPropertyName("block_preserve_scale")]
         public bool? BlockPreserveScale { get; set; }
+
         // TODO: make enum
         [JsonPropertyName("quote_size")]
         public string? QuoteSize { get; set; }
+
+        [JsonPropertyName("code_wrap")]
+        public bool CodeWrap { get; set; }
     }
 }

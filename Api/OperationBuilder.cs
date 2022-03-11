@@ -50,15 +50,12 @@ namespace CSharpNotion.Api
             };
         }
 
-        public static Operation MainOperation(MainCommand command, string blockId, string blockTable, string[] path, Dictionary<string, object?> args)
+        public static Operation MainOperation(MainCommand command, string blockId, string blockTable, string[] path, Dictionary<string, object?> args) => new Operation
         {
-            return new Operation
-            {
-                Command = command.ToString(),
-                Path = path,
-                Pointer = new General.Pointer(blockId, blockTable),
-                Args = args
-            };
-        }
+            Command = command.ToString(),
+            Path = path,
+            Pointer = new General.Pointer(blockId, blockTable),
+            Args = args
+        };
     }
 }

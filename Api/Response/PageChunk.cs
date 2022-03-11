@@ -87,5 +87,7 @@ namespace CSharpNotion.Api.Response
     {
         public JsonElement[][]? Title { get; set; }
         public string[][]? Checked { get; set; }
+        public JsonElement[][]? Caption { get; set; }
+        public string[][]? Language { get; set; }
     }
 }

@@ -45,23 +45,19 @@ namespace CSharpNotion.Entities
 
         protected TitleContainingBlock(Api.Response.RecordMapBlockValue blockValue) : base(blockValue)
         {
-            Title = blockValue?.Properties?.Title?.ElementAt(0)[0].Deserialize<string>() ?? "";
+            Title = blockValue?.Properties?.Title?.ElementAt(0)[0].GetString() ?? "";
         }
 
         public virtual async Task SetTitle(string newTitle)
         {
             try
             {
-                Api.Request.Operation operation = new()
+                Dictionary<string, object?> args = new()
                 {
-                    Args = new Dictionary<string, object?> {
-                        {"title", new string[][] { new string[] { newTitle } } }
-                    },
-                    Command = "set",
-                    Path = new string[1] { "properties" },
-                    Pointer = new Api.General.Pointer(Id, "block")
+                    { "title", new string[][] { new string[] { newTitle } } }
                 };
-                await QuickRequestSetup.SaveTransactions(operation).Send(Client.HttpClient);
+                Api.Request.Operation operation = Api.OperationBuilder.MainOperation(Api.MainCommand.update, Id, "block", new string[] { "properties" }, args);
+                (await QuickRequestSetup.SaveTransactions(operation).Send(Client.HttpClient)).EnsureSuccessStatusCode();
                 Title = newTitle;
             }
             catch (Exception ex)
