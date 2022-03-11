@@ -51,6 +51,9 @@ namespace CSharpNotion.Api.General
         public string? QuoteSize { get; set; }
 
         [JsonPropertyName("code_wrap")]
-        public bool CodeWrap { get; set; }
+        public bool? CodeWrap { get; set; }
+
+        [JsonPropertyName("alias_pointer")]
+        public Pointer? AliasPointer { get; set; }
     }
 }

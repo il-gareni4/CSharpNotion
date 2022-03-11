@@ -19,7 +19,8 @@
             { typeof(Entities.QuoteBlock), "quote" },
             { typeof(Entities.CalloutBlock), "callout" },
             { typeof(Entities.DividerBlock), "divider" },
-            { typeof(Entities.CodeBlock), "code" }
+            { typeof(Entities.CodeBlock), "code" },
+            { typeof(Entities.AliasBlock), "alias" }
         };
 
         public static readonly Dictionary<string, Type> TypeToBlock =
