@@ -109,6 +109,7 @@
         public string Caption { get; protected set; }
         public bool WrapCode { get; protected set; }
         public CodeBlockLanguage Language { get; protected set; }
+
         public CodeBlock(Api.Response.RecordMapBlockValue blockValue) : base(blockValue)
         {
             Caption = blockValue?.Properties?.Caption?.ElementAt(0)[0].GetString() ?? "";

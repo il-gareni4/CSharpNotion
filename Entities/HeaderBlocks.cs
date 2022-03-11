@@ -1,8 +1,9 @@
 ﻿namespace CSharpNotion.Entities
 {
-    public abstract class BaseHeaderBlock : ContentBlock
+    public abstract class BaseHeaderBlock : TitleContentBlock
     {
         public bool Toggleable { get; set; }
+
         public BaseHeaderBlock(Api.Response.RecordMapBlockValue blockValue) : base(blockValue)
         {
             Toggleable = blockValue?.Format?.Toggleable ?? false;

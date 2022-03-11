@@ -1,8 +1,9 @@
 ﻿namespace CSharpNotion.Entities
 {
-    public abstract class IconContentBlock : ContentBlock
+    public abstract class IconContentBlock : TitleContentBlock
     {
         public string? Icon { get; protected set; }
+
         public IconContentBlock(Api.Response.RecordMapBlockValue blockValue) : base(blockValue)
         {
             Icon = blockValue?.Format?.PageIcon ?? null;

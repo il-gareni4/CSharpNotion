@@ -5,9 +5,11 @@
         default_size,
         large
     }
-    public class QuoteBlock : ContentBlock
+
+    public class QuoteBlock : TitleContentBlock
     {
         public FormatQuoteSize QuoteSize { get; private set; }
+
         public QuoteBlock(Api.Response.RecordMapBlockValue blockValue) : base(blockValue)
         {
             QuoteSize = blockValue?.Format?.QuoteSize switch

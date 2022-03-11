@@ -57,5 +57,8 @@ namespace CSharpNotion.Api.General
         public Pointer? AliasPointer { get; set; }
 
         public bool? Toggleable { get; set; }
+
+        [JsonPropertyName("transclusion_reference_pointer")]
+        public Pointer? TransclusionReferencePointer { get; set; }
     }
 }

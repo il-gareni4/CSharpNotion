@@ -21,7 +21,9 @@
             { typeof(Entities.DividerBlock), "divider" },
             { typeof(Entities.CodeBlock), "code" },
             { typeof(Entities.AliasBlock), "alias" },
-            { typeof(Entities.EquationBlock), "equation" }
+            { typeof(Entities.EquationBlock), "equation" },
+            { typeof(Entities.SyncContainerBlock), "transclusion_container" },
+            { typeof(Entities.SyncReferenceBlock), "transclusion_reference" }
         };
 
         public static readonly Dictionary<string, Type> TypeToBlock =

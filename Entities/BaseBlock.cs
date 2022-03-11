@@ -39,7 +39,14 @@ namespace CSharpNotion.Entities
         }
     }
 
-    public abstract class TitleContainingBlock : BaseBlock
+    public interface ITitleBlock
+    {
+        string Title { get; }
+
+        Task SetTitle(string newTitle);
+    }
+
+    public abstract class TitleContainingBlock : BaseBlock, ITitleBlock
     {
         public string Title { get; protected set; }
 
@@ -52,10 +59,7 @@ namespace CSharpNotion.Entities
         {
             try
             {
-                Dictionary<string, object?> args = new()
-                {
-                    { "title", new string[][] { new string[] { newTitle } } }
-                };
+                Dictionary<string, object?> args = new() { { "title", new string[][] { new string[] { newTitle } } } };
                 Api.Request.Operation operation = Api.OperationBuilder.MainOperation(Api.MainCommand.update, Id, "block", new string[] { "properties" }, args);
                 (await QuickRequestSetup.SaveTransactions(operation).Send(Client.HttpClient)).EnsureSuccessStatusCode();
                 Title = newTitle;
@@ -67,11 +71,11 @@ namespace CSharpNotion.Entities
         }
     }
 
-    public abstract class ContentBlock : TitleContainingBlock
+    public abstract class ContentBlock : BaseBlock
     {
         protected List<BaseBlock> Content { get; set; } = new List<BaseBlock>();
 
-        protected List<string> ContentIds { get; set; }
+        public List<string> ContentIds { get; protected set; }
 
         protected ContentBlock(Api.Response.RecordMapBlockValue blockValue) : base(blockValue)
         {
@@ -122,6 +126,31 @@ namespace CSharpNotion.Entities
             ContentIds.Add(newBlock.Id);
             Content.Add(newBlockInstance);
             return newBlockInstance;
+        }
+    }
+
+    public abstract class TitleContentBlock : ContentBlock, ITitleBlock
+    {
+        public string Title { get; protected set; }
+
+        protected TitleContentBlock(Api.Response.RecordMapBlockValue blockValue) : base(blockValue)
+        {
+            Title = blockValue?.Properties?.Title?.ElementAt(0)[0].GetString() ?? "";
+        }
+
+        public virtual async Task SetTitle(string newTitle)
+        {
+            try
+            {
+                Dictionary<string, object?> args = new() { { "title", new string[][] { new string[] { newTitle } } } };
+                Api.Request.Operation operation = Api.OperationBuilder.MainOperation(Api.MainCommand.update, Id, "block", new string[] { "properties" }, args);
+                (await QuickRequestSetup.SaveTransactions(operation).Send(Client.HttpClient)).EnsureSuccessStatusCode();
+                Title = newTitle;
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine(ex.Message);
+            }
         }
     }
 }

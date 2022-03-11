@@ -11,6 +11,7 @@ namespace CSharpNotion.Api.Response
     {
         [JsonPropertyName("space_view")]
         public Dictionary<string, object>? SpaceView { get; set; }
+
         public Dictionary<string, RecordMapBlock>? Block { get; set; }
     }
 }

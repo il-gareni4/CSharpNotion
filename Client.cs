@@ -33,10 +33,15 @@ namespace CSharpNotion
         /// <param name="pageId">Id of block you need</param>
         /// <returns></returns>
         /// <exception cref="InvalidDataException"></exception>
-        public async Task<T> GetBlockAsync<T>(string pageId) where T : Entities.BaseBlock
+        /// <exception cref="InvalidOperationException"></exception>
+        /// <exception cref="HttpRequestException"></exception>
+        /// <exception cref="TaskCanceledException"></exception>
+        public async Task<T> GetBlockAsync<T>(string pageId) where T : Entities.BaseBlock => await GetBlockAsync<T>(HttpClient, pageId);
+
+        public static async Task<T> GetBlockAsync<T>(HttpClient httpClient, string pageId) where T : Entities.BaseBlock
         {
             pageId = Utils.ExtractId(pageId);
-            SyncRecordValuesResponse recordValues = await QuickRequestSetup.SyncRecordValues(pageId, "block").Send(HttpClient).DeserializeJson<SyncRecordValuesResponse>();
+            SyncRecordValuesResponse recordValues = await QuickRequestSetup.SyncRecordValues(pageId, "block").Send(httpClient).DeserializeJson<SyncRecordValuesResponse>();
             if (recordValues?.RecordMap?.Block is null || recordValues.RecordMap.Block.Count == 0) throw new InvalidDataException("Invalid response");
             if (Constants.BlockToType.GetValueOrDefault(typeof(T), "") != recordValues.RecordMap.Block.First().Value.Value!.Type) throw new InvalidDataException("Invalid type of block excepted");
             return (T)Activator.CreateInstance(typeof(T), recordValues.RecordMap.Block.First().Value.Value)!; ;
@@ -48,6 +53,9 @@ namespace CSharpNotion
         /// <param name="pageId">Id of block you need</param>
         /// <returns></returns>
         /// <exception cref="InvalidDataException"></exception>
+        /// <exception cref="InvalidOperationException"></exception>
+        /// <exception cref="HttpRequestException"></exception>
+        /// <exception cref="TaskCanceledException"></exception>
         public async Task<Entities.BaseBlock> GetBlockAsync(string pageId)
         {
             pageId = Utils.ExtractId(pageId);
