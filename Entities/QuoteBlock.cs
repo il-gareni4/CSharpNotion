@@ -6,7 +6,7 @@
         large
     }
 
-    public class QuoteBlock : TitleContentBlock
+    public class QuoteBlock : ColorTitleContentBlock
     {
         public FormatQuoteSize QuoteSize { get; private set; }
 

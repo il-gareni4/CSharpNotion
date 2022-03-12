@@ -1,6 +1,6 @@
 ﻿namespace CSharpNotion.Entities
 {
-    public class PageBlock : IconContentBlock
+    public class PageBlock : IconColorContentBlock
     {
         public string? Cover { get; set; }
         public float? CoverPosition { get; set; }

@@ -1,27 +1,27 @@
-﻿using CSharpNotion.Api.Response;
-
-namespace CSharpNotion.Entities
+﻿namespace CSharpNotion.Entities
 {
-    public class FileBlock : FileContainingBlock, IColorBlock
+    public abstract class IconColorContentBlock : TitleContentBlock, IColorBlock
     {
+        public string? Icon { get; protected set; }
         public BlockColor Color { get; set; }
 
-        public FileBlock(RecordMapBlockValue blockValue) : base(blockValue)
+        public IconColorContentBlock(Api.Response.RecordMapBlockValue blockValue) : base(blockValue)
         {
+            Icon = blockValue?.Format?.PageIcon ?? null;
             Color = BlockColorExtensions.ToBlockColor(blockValue?.Format?.BlockColor);
         }
 
-        public override async Task SetFileUrl(string source)
+        public virtual async Task SetIcon(string? icon)
         {
-            if (source == Source) return;
+            if (Icon == icon) return;
             try
             {
-                Dictionary<string, object?> propertiesArgs = new() { { "source", new string[][] { new string[] { source } } } };
-                Api.Request.Operation operation = Api.OperationBuilder.MainOperation(Api.MainCommand.update, Id, "block", new string[] { "properties" }, propertiesArgs);
+                Dictionary<string, object?> args = new() { { "page_icon", icon } };
+                Api.Request.Operation operation = Api.OperationBuilder.MainOperation(Api.MainCommand.update, Id, "block", new string[] { "format" }, args);
                 (await QuickRequestSetup.SaveTransactions(operation).Send(Client.HttpClient)).EnsureSuccessStatusCode();
-                Source = source;
+                Icon = icon;
             }
-            catch (HttpRequestException ex)
+            catch (Exception ex)
             {
                 Console.Error.WriteLine(ex.Message);
             }

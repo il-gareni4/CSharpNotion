@@ -48,6 +48,60 @@ namespace CSharpNotion.Entities
         Task SetTitle(string newTitle);
     }
 
+    public enum BlockColor
+    {
+        Default,
+        Gray,
+        Brown,
+        Orange,
+        Yellow,
+        Green,
+        Blue,
+        Purple,
+        Pink,
+        Red,
+        GrayBackground,
+        BrownBackground,
+        OrangeBackground,
+        YellowBackground,
+        GreenBackground,
+        BlueBackground,
+        PurpleBackground,
+        PinkBackground,
+        RedBackground
+    }
+
+    public static class BlockColorExtensions
+    {
+        public static string? ToColorString(this BlockColor blockColor)
+        {
+            if (blockColor == BlockColor.Default) return null;
+            else if (blockColor == BlockColor.Green) return "teal";
+            else if (blockColor == BlockColor.GreenBackground) return "teal_background";
+
+            string stringBlockColor = blockColor.ToString();
+            if (stringBlockColor.Contains("Background")) return stringBlockColor[..^10].ToLower() + "_" + stringBlockColor[^10..].ToLower();
+            else return stringBlockColor.ToLower();
+        }
+
+        public static BlockColor ToBlockColor(string? stringBlockColor)
+        {
+            if (string.IsNullOrEmpty(stringBlockColor)) return BlockColor.Default;
+            else if (stringBlockColor == "teal") return BlockColor.Green;
+            else if (stringBlockColor == "teal_background") return BlockColor.GreenBackground;
+
+            string TitleCaseStringBlockColor = string.Join("", stringBlockColor.Split('_').Select((word) => char.ToUpper(word[0]) + word[1..]));
+            return Enum.Parse<BlockColor>(TitleCaseStringBlockColor);
+        }
+    }
+
+    public interface IColorBlock
+    {
+        BlockColor Color { get; }
+
+        Task SetColor(BlockColor color);
+    }
+
     public abstract class TitleContainingBlock : BaseBlock, ITitleBlock
     {
         public string Title { get; protected set; }
@@ -148,6 +202,32 @@ namespace CSharpNotion.Entities
                 Api.Request.Operation operation = Api.OperationBuilder.MainOperation(Api.MainCommand.update, Id, "block", new string[] { "properties" }, args);
                 (await QuickRequestSetup.SaveTransactions(operation).Send(Client.HttpClient)).EnsureSuccessStatusCode();
                 Title = newTitle;
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine(ex.Message);
+            }
+        }
+    }
+
+    public abstract class ColorTitleContentBlock : TitleContentBlock, IColorBlock
+    {
+        public BlockColor Color { get; set; }
+
+        protected ColorTitleContentBlock(Api.Response.RecordMapBlockValue blockValue) : base(blockValue)
+        {
+            Color = BlockColorExtensions.ToBlockColor(blockValue?.Format?.BlockColor);
+        }
+
+        public async Task SetColor(BlockColor color)
+        {
+            if (color == Color) return;
+            try
+            {
+                Dictionary<string, object?> args = new() { { "block_color", color.ToColorString() } };
+                Api.Request.Operation operation = Api.OperationBuilder.MainOperation(Api.MainCommand.update, Id, "block", new string[] { "format" }, args);
+                (await QuickRequestSetup.SaveTransactions(operation).Send(Client.HttpClient)).EnsureSuccessStatusCode();
+                Color = color;
             }
             catch (Exception ex)
             {

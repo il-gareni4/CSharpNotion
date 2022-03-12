@@ -1,6 +1,6 @@
 ﻿namespace CSharpNotion.Entities
 {
-    public class TodoBlock : TitleContentBlock
+    public class TodoBlock : ColorTitleContentBlock
     {
         public bool Checked { get; private set; }
 

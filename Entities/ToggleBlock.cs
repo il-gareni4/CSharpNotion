@@ -1,6 +1,6 @@
 ﻿namespace CSharpNotion.Entities
 {
-    public class ToggleBlock : TitleContentBlock
+    public class ToggleBlock : ColorTitleContentBlock
     {
         public ToggleBlock(Api.Response.RecordMapBlockValue blockValue) : base(blockValue)
         { }

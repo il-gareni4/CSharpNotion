@@ -1,6 +1,6 @@
 ﻿namespace CSharpNotion.Entities
 {
-    public abstract class BaseHeaderBlock : TitleContentBlock
+    public abstract class BaseHeaderBlock : ColorTitleContentBlock
     {
         public bool Toggleable { get; set; }
 
