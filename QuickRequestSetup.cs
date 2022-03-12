@@ -1,4 +1,6 @@
-﻿namespace CSharpNotion
+﻿using MimeTypes;
+
+namespace CSharpNotion
 {
     internal static class QuickRequestSetup
     {
@@ -69,5 +71,20 @@
         });
 
         public static HttpRequestMessage SaveTransactions(Api.Request.Operation operation) => SaveTransactions(new Api.Request.Operation[] { operation });
+
+        public static HttpRequestMessage GetUploadFileUrl(Api.General.Pointer pointer, FileInfo fileInfo)
+        {
+            if (!fileInfo.Exists) throw new ArgumentException("filePath");
+
+            HttpRequestMessage request = new(HttpMethod.Post, Constants.ApiUrl + "/getUploadFileUrl");
+            Api.Request.GetUploadFileUrl requestBody = new()
+            {
+                ContentType = MimeTypeMap.GetMimeType(fileInfo.Extension),
+                Name = fileInfo.Name,
+                Record = pointer
+            };
+            Utils.SetHttpContent(ref request, requestBody);
+            return request;
+        }
     }
 }

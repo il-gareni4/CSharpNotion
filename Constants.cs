@@ -24,7 +24,8 @@
             { typeof(Entities.EquationBlock), "equation" },
             { typeof(Entities.SyncContainerBlock), "transclusion_container" },
             { typeof(Entities.SyncReferenceBlock), "transclusion_reference" },
-            { typeof(Entities.BreadcrumbBlock), "breadcrumb" }
+            { typeof(Entities.BreadcrumbBlock), "breadcrumb" },
+            { typeof(Entities.ImageBlock), "image" }
         };
 
         public static readonly Dictionary<string, Type> TypeToBlock =
