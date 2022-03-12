@@ -6,9 +6,5 @@ namespace CSharpNotion.Entities
     {
         public ImageBlock(RecordMapBlockValue blockValue) : base(blockValue)
         { }
-
-        public async Task SetImageUrl(string imageUrl) => await base.BaseSetFileUrl(imageUrl);
-
-        public async Task UploadAndSetImage(string imagePath, string? fileName = null) => await base.BaseUploadAndSetFile(imagePath, fileName);
     }
 }

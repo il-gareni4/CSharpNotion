@@ -31,23 +31,20 @@ namespace CSharpNotion.Entities
             }
         }
 
-        protected virtual async Task BaseSetFileUrl(string source, bool setDisplaySource = true)
+        public virtual async Task SetFileUrl(string source)
         {
             if (source == Source) return;
             try
             {
                 Dictionary<string, object?> propertiesArgs = new() { { "source", new string[][] { new string[] { source } } } };
+                Dictionary<string, object?> formatArgs = new() { { "display_source", source } };
                 List<Api.Request.Operation> operations = new() {
                     Api.OperationBuilder.MainOperation(Api.MainCommand.update, Id, "block", new string[] { "properties" }, propertiesArgs),
+                    Api.OperationBuilder.MainOperation(Api.MainCommand.update, Id, "block", new string[] { "format" }, formatArgs)
                 };
-                if (setDisplaySource)
-                {
-                    Dictionary<string, object?> formatArgs = new() { { "display_source", source } };
-                    operations.Add(Api.OperationBuilder.MainOperation(Api.MainCommand.update, Id, "block", new string[] { "format" }, formatArgs));
-                }
                 (await QuickRequestSetup.SaveTransactions(operations.ToArray()).Send(Client.HttpClient)).EnsureSuccessStatusCode();
                 Source = source;
-                if (setDisplaySource) DisplaySource = source;
+                DisplaySource = source;
             }
             catch (HttpRequestException ex)
             {
@@ -55,10 +52,12 @@ namespace CSharpNotion.Entities
             }
         }
 
-        protected virtual async Task BaseUploadAndSetFile(string filePath, string? fileName = null)
+        public virtual async Task UploadAndSetFile(string filePath, string? fileName = null)
         {
             GetUploadFileUrlResponse urlsResponse = await Api.ApiMaster.UploadFile(Client.HttpClient, Id, filePath);
-            await BaseSetFileUrl(urlsResponse.Url!);
+            await SetFileUrl(urlsResponse.Url!);
+            if (fileName == "") return;
+
             fileName ??= new FileInfo(filePath).Name;
             Dictionary<string, object?> args = new() { { "title", new string[][] { new string[] { fileName } } } };
             Api.Request.Operation operation = Api.OperationBuilder.MainOperation(Api.MainCommand.update, Id, "block", new string[] { "properties" }, args);

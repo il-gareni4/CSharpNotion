@@ -7,16 +7,20 @@ namespace CSharpNotion.Entities
         public FileBlock(RecordMapBlockValue blockValue) : base(blockValue)
         { }
 
-        public async Task SetFileUrl(string fileUrl) => await base.BaseSetFileUrl(fileUrl, false);
-
-        public async Task UploadAndSetFile(string filePath, string? fileName = null)
+        public override async Task SetFileUrl(string source)
         {
-            GetUploadFileUrlResponse urlsResponse = await Api.ApiMaster.UploadFile(Client.HttpClient, Id, filePath);
-            await SetFileUrl(urlsResponse.Url!);
-            fileName ??= new FileInfo(filePath).Name;
-            Dictionary<string, object?> args = new() { { "title", new string[][] { new string[] { fileName } } } };
-            Api.Request.Operation operation = Api.OperationBuilder.MainOperation(Api.MainCommand.update, Id, "block", new string[] { "properties" }, args);
-            (await QuickRequestSetup.SaveTransactions(operation).Send(Client.HttpClient)).EnsureSuccessStatusCode();
+            if (source == Source) return;
+            try
+            {
+                Dictionary<string, object?> propertiesArgs = new() { { "source", new string[][] { new string[] { source } } } };
+                Api.Request.Operation operation = Api.OperationBuilder.MainOperation(Api.MainCommand.update, Id, "block", new string[] { "properties" }, propertiesArgs);
+                (await QuickRequestSetup.SaveTransactions(operation).Send(Client.HttpClient)).EnsureSuccessStatusCode();
+                Source = source;
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.Error.WriteLine(ex.Message);
+            }
         }
     }
 }
