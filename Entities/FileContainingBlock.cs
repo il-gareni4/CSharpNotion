@@ -7,12 +7,14 @@ namespace CSharpNotion.Entities
         public string Caption { get; protected set; }
         public string? Source { get; protected set; }
         public string? DisplaySource { get; protected set; }
+        public string[]? FileIds { get; protected set; }
 
         public FileContainingBlock(RecordMapBlockValue blockValue) : base(blockValue)
         {
             Caption = blockValue?.Properties?.Caption?.ElementAt(0)[0].GetString() ?? "";
             Source = blockValue?.Properties?.Source?.ElementAt(0)[0];
             DisplaySource = blockValue?.Format?.DisplaySource;
+            FileIds = blockValue?.FileIds;
         }
 
         public async Task SetCaption(string caption)

@@ -72,6 +72,9 @@ namespace CSharpNotion.Api.Response
 
         public General.BlockFormat? Format { get; set; }
         public string[]? Discussions { get; set; }
+
+        [JsonPropertyName("file_ids")]
+        public string[]? FileIds { get; set; }
     }
 
     public class RecordMapBlockPermission
