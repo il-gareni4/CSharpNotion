@@ -25,7 +25,9 @@
             { typeof(Entities.SyncContainerBlock), "transclusion_container" },
             { typeof(Entities.SyncReferenceBlock), "transclusion_reference" },
             { typeof(Entities.BreadcrumbBlock), "breadcrumb" },
-            { typeof(Entities.ImageBlock), "image" }
+            { typeof(Entities.ImageBlock), "image" },
+            { typeof(Entities.VideoBlock), "video" },
+            { typeof(Entities.FileBlock), "file" }
         };
 
         public static readonly Dictionary<string, Type> TypeToBlock =

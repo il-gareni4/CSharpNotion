@@ -31,7 +31,7 @@ namespace CSharpNotion.Entities
             }
         }
 
-        protected virtual async Task SetFileUrl(string source, bool setDisplaySource = true)
+        protected virtual async Task BaseSetFileUrl(string source, bool setDisplaySource = true)
         {
             if (source == Source) return;
             try
@@ -55,10 +55,14 @@ namespace CSharpNotion.Entities
             }
         }
 
-        protected virtual async Task UploadAndSetFile(string filePath)
+        protected virtual async Task BaseUploadAndSetFile(string filePath, string? fileName = null)
         {
             GetUploadFileUrlResponse urlsResponse = await Api.ApiMaster.UploadFile(Client.HttpClient, Id, filePath);
-            await SetFileUrl(urlsResponse.Url!);
+            await BaseSetFileUrl(urlsResponse.Url!);
+            fileName ??= new FileInfo(filePath).Name;
+            Dictionary<string, object?> args = new() { { "title", new string[][] { new string[] { fileName } } } };
+            Api.Request.Operation operation = Api.OperationBuilder.MainOperation(Api.MainCommand.update, Id, "block", new string[] { "properties" }, args);
+            (await QuickRequestSetup.SaveTransactions(operation).Send(Client.HttpClient)).EnsureSuccessStatusCode();
         }
     }
 }
