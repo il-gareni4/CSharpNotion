@@ -39,12 +39,10 @@ namespace CSharpNotion
         /// <exception cref="InvalidOperationException"></exception>
         /// <exception cref="HttpRequestException"></exception>
         /// <exception cref="TaskCanceledException"></exception>
-        public async Task<T> GetBlockAsync<T>(string pageId) where T : Entities.BaseBlock => await GetBlockAsync<T>(HttpClient, pageId);
-
-        public async Task<T> GetBlockAsync<T>(HttpClient httpClient, string pageId) where T : Entities.BaseBlock
+        public async Task<T> GetBlockAsync<T>(string pageId) where T : Entities.BaseBlock
         {
             pageId = Utils.ExtractId(pageId);
-            SyncRecordValuesResponse recordValues = await QuickRequestSetup.SyncRecordValues(pageId, "block").Send(httpClient).DeserializeJson<SyncRecordValuesResponse>();
+            SyncRecordValuesResponse recordValues = await QuickRequestSetup.SyncRecordValues(pageId, "block").Send(HttpClient).DeserializeJson<SyncRecordValuesResponse>();
             if (recordValues?.RecordMap?.Block is null || recordValues.RecordMap.Block.Count == 0) throw new InvalidDataException("Invalid response");
             if (Constants.BlockToType.GetValueOrDefault(typeof(T)) != recordValues.RecordMap.Block.First().Value.Value!.Type) throw new InvalidDataException("Invalid type of block excepted");
             return (T)Activator.CreateInstance(typeof(T), this, recordValues.RecordMap.Block.First().Value.Value)!; ;
@@ -64,8 +62,7 @@ namespace CSharpNotion
             pageId = Utils.ExtractId(pageId);
             SyncRecordValuesResponse recordValues = await QuickRequestSetup.SyncRecordValues(pageId, "block").Send(HttpClient).DeserializeJson<SyncRecordValuesResponse>();
             if (recordValues?.RecordMap?.Block is null || recordValues.RecordMap.Block.Count == 0) throw new InvalidDataException("Invalid response");
-            Type blockType = Constants.TypeToBlock[recordValues.RecordMap.Block.First().Value.Value!.Type!];
-            return (Entities.BaseBlock)Activator.CreateInstance(blockType, this, recordValues.RecordMap.Block.First().Value.Value)!;
+            return Utils.ConvertBlockFromResponse(this, recordValues.RecordMap.Block.First().Value.Value!);
         }
     }
 }

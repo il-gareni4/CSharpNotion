@@ -21,7 +21,7 @@
             if (SyncContainerPointer is null) throw new NullReferenceException();
             if (SyncContainerBlock is not null) return;
 
-            SyncContainerBlock = await Client.GetBlockAsync<SyncContainerBlock>(Client.HttpClient, SyncContainerPointer.Id);
+            SyncContainerBlock = await Client.GetBlockAsync<SyncContainerBlock>(SyncContainerPointer.Id);
             ContentIds = SyncContainerBlock.ContentIds;
         }
 
