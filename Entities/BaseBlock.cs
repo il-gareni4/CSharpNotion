@@ -84,7 +84,7 @@ namespace CSharpNotion.Entities
             return Content;
         }
 
-        public virtual async Task<T> AppendBlock<T>(string title = "") where T : BaseBlock
+        public virtual T AppendBlock<T>() where T : BaseBlock
         {
             long createdTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
             Api.Response.RecordMapBlockValue newBlock = new()
@@ -97,21 +97,18 @@ namespace CSharpNotion.Entities
                 ParentId = Id,
                 ParentTable = "block",
                 CreatedTime = createdTime,
-                LastEditedTime = createdTime,
-                Properties = new Api.Response.RecordMapBlockProperties()
-                {
-                    Title = new JsonElement[][] { new JsonElement[] { JsonSerializer.SerializeToElement(title) } }
-                }
+                LastEditedTime = createdTime
             };
-            Api.Request.Operation[] operations = new Api.Request.Operation[]
-            {
-                Api.OperationBuilder.FromBlockValueToSetOperation(newBlock),
-                Api.OperationBuilder.ListOperation(Api.ListCommand.listAfter, Id, newBlock.Id, ContentIds.LastOrDefault())
-            };
-            (await QuickRequestSetup.SaveTransactions(operations).Send(Client.HttpClient)).EnsureSuccessStatusCode();
+            Client.AddOperation(Api.OperationBuilder.FromBlockValueToSetOperation(newBlock));
             T newBlockInstance = (T)Activator.CreateInstance(typeof(T), Client, newBlock)!;
-            ContentIds.Add(newBlock.Id);
-            Content.Add(newBlockInstance);
+            Client.AddOperation(
+                Api.OperationBuilder.ListOperation(Api.ListCommand.listAfter, Id, newBlock.Id, ContentIds.LastOrDefault()),
+                () =>
+                {
+                    ContentIds.Add(newBlock.Id);
+                    Content.Add(newBlockInstance);
+                }
+            );
             return newBlockInstance;
         }
     }

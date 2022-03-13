@@ -20,10 +20,10 @@ namespace CSharpNotion.Entities
             else return await base.GetContent();
         }
 
-        public override async Task<U> AppendBlock<U>(string title = "")
+        public override U AppendBlock<U>()
         {
             if (!Toggleable) throw new InvalidOperationException("Header block is not toggleable");
-            else return await base.AppendBlock<U>(title);
+            else return base.AppendBlock<U>();
         }
     }
 

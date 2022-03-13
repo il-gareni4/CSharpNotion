@@ -20,7 +20,7 @@ namespace CSharpNotion.Entities
             BlockValue = blockValue!;
         }
 
-        private async Task FetchSyncContainerBlock()
+        public async Task FetchSyncContainerBlock()
         {
             if (SyncContainerPointer is null) throw new NullReferenceException();
             if (SyncContainerBlock is not null) return;
@@ -29,16 +29,22 @@ namespace CSharpNotion.Entities
             ContentIds = SyncContainerBlock.ContentIds;
         }
 
+        private void CheckSyncContainerFetched()
+        {
+            if (SyncContainerBlock is null) throw new InvalidOperationException("You need to fetch a SyncContainerBlock" +
+                " before using ContentBlock (base class) methods. You can do it by calling method FetchSyncContainerBlock()");
+        }
+
         public override async Task<List<BaseBlock>> GetContent()
         {
-            await FetchSyncContainerBlock();
+            CheckSyncContainerFetched();
             return await SyncContainerBlock!.GetContent();
         }
 
-        public override async Task<T> AppendBlock<T>(string title = "")
+        public override T AppendBlock<T>()
         {
-            await FetchSyncContainerBlock();
-            return await SyncContainerBlock!.AppendBlock<T>(title);
+            CheckSyncContainerFetched();
+            return SyncContainerBlock!.AppendBlock<T>();
         }
 
         public SyncReferenceBlock SetSyncBlock(string pageId)

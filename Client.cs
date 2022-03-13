@@ -68,12 +68,13 @@ namespace CSharpNotion
             return Utils.ConvertBlockFromResponse(this, recordValues.RecordMap.Block.First().Value.Value!);
         }
 
+        public void AddOperation(Operation operation) => _operations.Add(operation);
+
         public void AddOperation(Operation operation, Action action)
         {
             _operations.Add(operation);
             _actions.Add(action);
         }
-
 
         public async Task Commit()
         {
