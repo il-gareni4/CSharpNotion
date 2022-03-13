@@ -14,7 +14,7 @@ namespace CSharpNotion.Api
                                                                            .DeserializeJson<GetUploadFileUrlResponse>();
             if (urlsResponse.Url is null) throw new InvalidDataException($"Cannot get upload URL for this file: {filePath}");
             HttpRequestMessage imageRequest = new(HttpMethod.Put, urlsResponse.SignedPutUrl);
-            imageRequest.Content = new ByteArrayContent(File.ReadAllBytes(filePath));
+            imageRequest.Content = new StreamContent(new FileStream(filePath, FileMode.Open));
             imageRequest.Content.Headers.ContentType = new MediaTypeHeaderValue(MimeTypes.MimeTypeMap.GetMimeType(fileInfo.Extension));
             (await Client.HttpClient.SendAsync(imageRequest)).EnsureSuccessStatusCode();
             return urlsResponse;

@@ -27,7 +27,7 @@ namespace CSharpNotion
         }
 
         /// <summary>
-        /// Get a block by ID with type T. Type checking incuded
+        /// Get a block by ID with type T. Type checking included
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="pageId">Id of block you need</param>
@@ -43,7 +43,7 @@ namespace CSharpNotion
             pageId = Utils.ExtractId(pageId);
             SyncRecordValuesResponse recordValues = await QuickRequestSetup.SyncRecordValues(pageId, "block").Send(httpClient).DeserializeJson<SyncRecordValuesResponse>();
             if (recordValues?.RecordMap?.Block is null || recordValues.RecordMap.Block.Count == 0) throw new InvalidDataException("Invalid response");
-            if (Constants.BlockToType.GetValueOrDefault(typeof(T), "") != recordValues.RecordMap.Block.First().Value.Value!.Type) throw new InvalidDataException("Invalid type of block excepted");
+            if (Constants.BlockToType.GetValueOrDefault(typeof(T)) != recordValues.RecordMap.Block.First().Value.Value!.Type) throw new InvalidDataException("Invalid type of block excepted");
             return (T)Activator.CreateInstance(typeof(T), recordValues.RecordMap.Block.First().Value.Value)!; ;
         }
 

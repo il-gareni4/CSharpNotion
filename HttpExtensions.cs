@@ -2,7 +2,7 @@
 
 namespace CSharpNotion
 {
-    internal static class HttpExtension
+    internal static class HttpExtensions
     {
         /// <summary>
         ///
