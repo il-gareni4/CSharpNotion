@@ -1,8 +1,10 @@
-﻿namespace CSharpNotion.Entities
+﻿using CSharpNotion.Api.Response;
+
+namespace CSharpNotion.Entities
 {
     public class SyncContainerBlock : ContentBlock
     {
-        public SyncContainerBlock(Client client, Api.Response.RecordMapBlockValue blockValue) : base(client, blockValue)
+        public SyncContainerBlock(Client client, RecordMapBlockValue blockValue) : base(client, blockValue)
         { }
     }
 
@@ -10,10 +12,12 @@
     {
         public Api.General.Pointer? SyncContainerPointer { get; protected set; }
         protected SyncContainerBlock? SyncContainerBlock { get; set; }
+        public RecordMapBlockValue BlockValue { get; }
 
-        public SyncReferenceBlock(Client client, Api.Response.RecordMapBlockValue blockValue) : base(client, blockValue)
+        public SyncReferenceBlock(Client client, RecordMapBlockValue blockValue) : base(client, blockValue)
         {
             SyncContainerPointer = blockValue?.Format?.TransclusionReferencePointer;
+            BlockValue = blockValue!;
         }
 
         private async Task FetchSyncContainerBlock()
@@ -37,31 +41,29 @@
             return await SyncContainerBlock!.AppendBlock<T>(title);
         }
 
-        public async Task SetSyncBlock(string pageId)
+        public SyncReferenceBlock SetSyncBlock(string pageId)
         {
             pageId = Utils.ExtractId(pageId);
-            if (SyncContainerPointer is not null && SyncContainerPointer.Id == pageId && SyncContainerPointer.Table == "block") return;
-            try
-            {
-                Api.General.Pointer newPointer = new(pageId, "block");
-                Dictionary<string, object?> args = new() { { "transclusion_reference_pointer", newPointer } };
-                Api.Request.Operation operation = Api.OperationBuilder.MainOperation(Api.MainCommand.update, Id, "block", new string[] { "format" }, args);
-                (await QuickRequestSetup.SaveTransactions(operation).Send(Client.HttpClient)).EnsureSuccessStatusCode();
-                SyncContainerPointer = newPointer;
-                SyncContainerBlock = null;
-            }
-            catch (HttpRequestException ex)
-            {
-                Console.Error.WriteLine(ex.Message);
-            }
+            if (SyncContainerPointer is not null && SyncContainerPointer.Id == pageId && SyncContainerPointer.Table == "block") return this;
+            Api.General.Pointer newPointer = new(pageId, "block");
+            Dictionary<string, object?> args = new() { { "transclusion_reference_pointer", newPointer } };
+            Client.AddOperation(
+                Api.OperationBuilder.MainOperation(Api.MainCommand.update, Id, "block", new string[] { "format" }, args),
+                () =>
+                {
+                    SyncContainerPointer = newPointer;
+                    SyncContainerBlock = null;
+                }
+            );
+            return this;
         }
 
-        public async Task SetSyncBlock(SyncContainerBlock syncContainerBlock) => await SetSyncBlock(syncContainerBlock.Id);
+        public SyncReferenceBlock SetSyncBlock(SyncContainerBlock syncContainerBlock) => SetSyncBlock(syncContainerBlock.Id);
 
-        public async Task SetSyncBlock(SyncReferenceBlock syncReferenceBlock)
+        public SyncReferenceBlock SetSyncBlock(SyncReferenceBlock syncReferenceBlock)
         {
             if (syncReferenceBlock.SyncContainerPointer is null) throw new InvalidDataException();
-            await SetSyncBlock(syncReferenceBlock.SyncContainerPointer.Id);
+            return SetSyncBlock(syncReferenceBlock.SyncContainerPointer.Id);
         }
     }
 }

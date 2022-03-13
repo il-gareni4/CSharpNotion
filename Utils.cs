@@ -1,4 +1,5 @@
-﻿using System.Net.Http.Headers;
+﻿using CSharpNotion.Api.Response;
+using System.Net.Http.Headers;
 using System.Text.Json;
 
 namespace CSharpNotion
@@ -18,10 +19,16 @@ namespace CSharpNotion
             httpRequest.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
         }
 
-        public static Entities.BaseBlock ConvertBlockFromResponse(Client client, Api.Response.RecordMapBlockValue blockValue)
+        public static Entities.BaseBlock ConvertBlockFromResponse(Client client, RecordMapBlockValue blockValue)
         {
-            Type blockType = Constants.TypeToBlock[blockValue.Type ?? "text"];
+            if (blockValue.Type is null) throw new ArgumentNullException("blockValue.Type can't be null");
+            Type blockType = Constants.TypeToBlock.GetValueOrDefault(blockValue.Type, typeof(Entities.DividerBlock));
             return (Entities.BaseBlock)Activator.CreateInstance(blockType, client, blockValue)!;
+        }
+
+        public static string RecieveTitle(RecordMapBlockValue blockValue)
+        {
+            return blockValue?.Properties?.Title?.ElementAt(0)[0].GetString() ?? "";
         }
     }
 }

@@ -1,8 +1,9 @@
 ﻿using CSharpNotion.Api.Response;
+using CSharpNotion.Entities.Interfaces;
 
 namespace CSharpNotion.Entities
 {
-    public class FileBlock : FileContainingBlock, IColorBlock
+    public class FileBlock : FileContainingBlock<FileBlock>, IColorBlock<FileBlock>
     {
         public BlockColor Color { get; set; }
 
@@ -11,36 +12,37 @@ namespace CSharpNotion.Entities
             Color = BlockColorExtensions.ToBlockColor(blockValue?.Format?.BlockColor);
         }
 
-        public override async Task SetFileUrl(string source)
+        public override FileBlock SetFileUrl(string source)
         {
-            if (source == Source) return;
-            try
-            {
-                Dictionary<string, object?> propertiesArgs = new() { { "source", new string[][] { new string[] { source } } } };
-                Api.Request.Operation operation = Api.OperationBuilder.MainOperation(Api.MainCommand.update, Id, "block", new string[] { "properties" }, propertiesArgs);
-                (await QuickRequestSetup.SaveTransactions(operation).Send(Client.HttpClient)).EnsureSuccessStatusCode();
-                Source = source;
-            }
-            catch (HttpRequestException ex)
-            {
-                Console.Error.WriteLine(ex.Message);
-            }
+            if (source == Source) return this;
+            Dictionary<string, object?> propertiesArgs = new() { { "source", new string[][] { new string[] { source } } } };
+            Client.AddOperation(
+                Api.OperationBuilder.MainOperation(Api.MainCommand.update, Id, "block", new string[] { "properties" }, propertiesArgs),
+                () => Source = source
+            );
+            return this;
         }
 
-        public async Task SetColor(BlockColor color)
+        public FileBlock SetColor(BlockColor color)
         {
-            if (color == Color) return;
-            try
-            {
-                Dictionary<string, object?> args = new() { { "block_color", color.ToColorString() } };
-                Api.Request.Operation operation = Api.OperationBuilder.MainOperation(Api.MainCommand.update, Id, "block", new string[] { "format" }, args);
-                (await QuickRequestSetup.SaveTransactions(operation).Send(Client.HttpClient)).EnsureSuccessStatusCode();
-                Color = color;
-            }
-            catch (Exception ex)
-            {
-                Console.Error.WriteLine(ex.Message);
-            }
+            if (color == Color) return this;
+            Dictionary<string, object?> args = new() { { "block_color", color.ToColorString() } };
+            Client.AddOperation(
+                Api.OperationBuilder.MainOperation(Api.MainCommand.update, Id, "block", new string[] { "format" }, args),
+                () => Color = color
+            );
+            return this;
+        }
+
+        public override FileBlock SetCaption(string caption)
+        {
+            if (caption == Caption) return this;
+            Dictionary<string, object?> args = new() { { "caption", new string[][] { new string[] { caption } } } };
+            Client.AddOperation(
+                Api.OperationBuilder.MainOperation(Api.MainCommand.update, Id, "block", new string[] { "properties" }, args),
+                () => Caption = caption
+            );
+            return this;
         }
     }
 }

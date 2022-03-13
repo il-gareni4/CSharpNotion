@@ -1,47 +1,72 @@
-﻿namespace CSharpNotion.Entities
+﻿using CSharpNotion.Api.Response;
+using CSharpNotion.Entities.Interfaces;
+
+namespace CSharpNotion.Entities
 {
-    public class PageBlock : IconColorContentBlock
+    public class PageBlock : IconColorContentBlock<PageBlock>
     {
         public string? Cover { get; set; }
         public float? CoverPosition { get; set; }
 
-        public PageBlock(Client client, Api.Response.RecordMapBlockValue blockValue) : base(client, blockValue)
+        public PageBlock(Client client, RecordMapBlockValue blockValue) : base(client, blockValue)
         {
             Cover = blockValue?.Format?.PageCover;
             CoverPosition = blockValue?.Format?.PageCoverPosition;
         }
 
-        public async Task SetCover(string? pageCover)
+        public PageBlock SetCover(string? cover)
         {
-            if (pageCover == Cover) return;
-            try
-            {
-                Dictionary<string, object?> args = new() { { "page_cover", pageCover } };
-                Api.Request.Operation operation = Api.OperationBuilder.MainOperation(Api.MainCommand.update, Id, "block", new string[] { "format" }, args);
-                (await QuickRequestSetup.SaveTransactions(operation).Send(Client.HttpClient)).EnsureSuccessStatusCode();
-                Cover = pageCover;
-            }
-            catch (Exception ex)
-            {
-                Console.Error.WriteLine(ex.Message);
-            }
+            if (Cover == cover) return this;
+            Dictionary<string, object?> args = new() { { "page_cover", cover } };
+            Client.AddOperation(
+                Api.OperationBuilder.MainOperation(Api.MainCommand.update, Id, "block", new string[] { "format" }, args),
+                () => Cover = cover
+            );
+            return this;
         }
 
-        public async Task ChangeCoverPosition(float coverPosition)
+        public PageBlock ChangeCoverPosition(float coverPosition)
         {
             if (coverPosition < 0 || coverPosition > 1) throw new ArgumentException("The cover position must be between 0 and 1 inclusive", "coverPosition");
-            if (coverPosition == CoverPosition) return;
-            try
-            {
-                Dictionary<string, object?> args = new() { { "page_cover_position", coverPosition } };
-                Api.Request.Operation operation = Api.OperationBuilder.MainOperation(Api.MainCommand.update, Id, "block", new string[] { "format" }, args);
-                (await QuickRequestSetup.SaveTransactions(operation).Send(Client.HttpClient)).EnsureSuccessStatusCode();
-                CoverPosition = coverPosition;
-            }
-            catch (Exception ex)
-            {
-                Console.Error.WriteLine(ex.Message);
-            }
+            if (coverPosition == CoverPosition) return this;
+            Dictionary<string, object?> args = new() { { "page_cover_position", coverPosition } };
+            Client.AddOperation(
+                 Api.OperationBuilder.MainOperation(Api.MainCommand.update, Id, "block", new string[] { "format" }, args),
+                 () => CoverPosition = coverPosition
+             );
+            return this;
+        }
+
+        public override PageBlock SetTitle(string title)
+        {
+            Dictionary<string, object?> args = new() { { "title", new string[][] { new string[] { title } } } };
+            Client.AddOperation(
+                Api.OperationBuilder.MainOperation(Api.MainCommand.update, Id, "block", new string[] { "properties" }, args),
+                () => Title = title
+            );
+            return this;
+        }
+
+        public override PageBlock SetColor(BlockColor color)
+        {
+            if (color == Color) return this;
+            Dictionary<string, object?> args = new() { { "block_color", color.ToColorString() } };
+            Client.AddOperation(
+                Api.OperationBuilder.MainOperation(Api.MainCommand.update, Id, "block", new string[] { "format" }, args),
+                () => Color = color
+            );
+            return this;
+        }
+
+        public override PageBlock SetIcon(string? icon)
+        {
+            if (Icon == icon) return this;
+            Dictionary<string, object?> args = new() { { "page_icon", icon } };
+            Client.AddOperation(
+                Api.OperationBuilder.MainOperation(Api.MainCommand.update, Id, "block", new string[] { "format" }, args),
+                () => Icon = icon
+            );
+            return this;
         }
     }
 }

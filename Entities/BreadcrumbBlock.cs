@@ -1,8 +1,10 @@
-﻿namespace CSharpNotion.Entities
+﻿using CSharpNotion.Api.Response;
+
+namespace CSharpNotion.Entities
 {
     public class BreadcrumbBlock : BaseBlock
     {
-        public BreadcrumbBlock(Client client, Api.Response.RecordMapBlockValue blockValue) : base(client, blockValue)
+        public BreadcrumbBlock(Client client, RecordMapBlockValue blockValue) : base(client, blockValue)
         {
         }
     }

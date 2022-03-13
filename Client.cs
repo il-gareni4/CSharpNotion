@@ -1,4 +1,5 @@
-﻿using CSharpNotion.Api.Response;
+﻿using CSharpNotion.Api.Request;
+using CSharpNotion.Api.Response;
 using System.Net;
 using System.Text.Json;
 
@@ -10,6 +11,8 @@ namespace CSharpNotion
         private readonly HttpClientHandler httpClientHandler;
         public readonly HttpClient HttpClient;
         private readonly string _tokenV2;
+        private readonly List<Operation> _operations = new();
+        private readonly List<Action> _actions = new();
 
         public static readonly JsonSerializerOptions SerializeOptions = new()
         {
@@ -63,6 +66,20 @@ namespace CSharpNotion
             SyncRecordValuesResponse recordValues = await QuickRequestSetup.SyncRecordValues(pageId, "block").Send(HttpClient).DeserializeJson<SyncRecordValuesResponse>();
             if (recordValues?.RecordMap?.Block is null || recordValues.RecordMap.Block.Count == 0) throw new InvalidDataException("Invalid response");
             return Utils.ConvertBlockFromResponse(this, recordValues.RecordMap.Block.First().Value.Value!);
+        }
+
+        public void AddOperation(Operation operation, Action action)
+        {
+            _operations.Add(operation);
+            _actions.Add(action);
+        }
+
+
+        public async Task Commit()
+        {
+            (await QuickRequestSetup.SaveTransactions(_operations.ToArray()).Send(HttpClient)).EnsureSuccessStatusCode();
+            foreach (Action action in _actions) action();
+            _operations.Clear();
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace CSharpNotion.Entities
+﻿using CSharpNotion.Api.Response;
+
+namespace CSharpNotion.Entities
 {
     public enum CodeBlockLanguage
     {
@@ -104,65 +106,60 @@
         };
     }
 
-    public class CodeBlock : TitleContainingBlock, ICaptionBlock
+    public class CodeBlock : TitleContainingBlock<CodeBlock>, ICaptionBlock<CodeBlock>
     {
         public string Caption { get; protected set; }
         public bool WrapCode { get; protected set; }
         public CodeBlockLanguage Language { get; protected set; }
 
-        public CodeBlock(Client client, Api.Response.RecordMapBlockValue blockValue) : base(client, blockValue)
+        public CodeBlock(Client client, RecordMapBlockValue blockValue) : base(client, blockValue)
         {
             Caption = blockValue?.Properties?.Caption?.ElementAt(0)[0].GetString() ?? "";
             WrapCode = blockValue?.Format?.CodeWrap ?? false;
             Language = CodeBlockLanguageExtensions.GetLanguageByString(blockValue?.Properties?.Language?.ElementAt(0)[0]) ?? CodeBlockLanguage.JavaScript;
         }
 
-        public async Task SetCaption(string caption)
+        public CodeBlock SetCaption(string caption)
         {
-            if (caption == Caption) return;
-            try
-            {
-                Dictionary<string, object?> args = new() { { "caption", new string[][] { new string[] { caption } } } };
-                Api.Request.Operation operation = Api.OperationBuilder.MainOperation(Api.MainCommand.update, Id, "block", new string[] { "properties" }, args);
-                (await QuickRequestSetup.SaveTransactions(operation).Send(Client.HttpClient)).EnsureSuccessStatusCode();
-                Caption = caption;
-            }
-            catch (HttpRequestException ex)
-            {
-                Console.Error.WriteLine(ex.Message);
-            }
+            if (caption == Caption) return this;
+            Dictionary<string, object?> args = new() { { "caption", new string[][] { new string[] { caption } } } };
+            Client.AddOperation(
+                Api.OperationBuilder.MainOperation(Api.MainCommand.update, Id, "block", new string[] { "properties" }, args),
+                () => Caption = caption
+            );
+            return this;
         }
 
-        public async Task SetWrapCode(bool wrapCode)
+        public CodeBlock SetWrapCode(bool wrapCode)
         {
-            if (wrapCode == WrapCode) return;
-            try
-            {
-                Dictionary<string, object?> args = new() { { "code_wrap", wrapCode } };
-                Api.Request.Operation operation = Api.OperationBuilder.MainOperation(Api.MainCommand.update, Id, "block", new string[] { "format" }, args);
-                (await QuickRequestSetup.SaveTransactions(operation).Send(Client.HttpClient)).EnsureSuccessStatusCode();
-                WrapCode = wrapCode;
-            }
-            catch (HttpRequestException ex)
-            {
-                Console.Error.WriteLine(ex.Message);
-            }
+            if (wrapCode == WrapCode) return this;
+            Dictionary<string, object?> args = new() { { "code_wrap", wrapCode } };
+            Client.AddOperation(
+                Api.OperationBuilder.MainOperation(Api.MainCommand.update, Id, "block", new string[] { "format" }, args),
+                () => WrapCode = wrapCode
+            );
+            return this;
         }
 
-        public async Task SetLanguage(CodeBlockLanguage language)
+        public CodeBlock SetLanguage(CodeBlockLanguage language)
         {
-            if (language == Language) return;
-            try
-            {
-                Dictionary<string, object?> args = new() { { "language", new string[][] { new string[] { language.ToCodeNameString() } } } };
-                Api.Request.Operation operation = Api.OperationBuilder.MainOperation(Api.MainCommand.update, Id, "block", new string[] { "properties" }, args);
-                (await QuickRequestSetup.SaveTransactions(operation).Send(Client.HttpClient)).EnsureSuccessStatusCode();
-                Language = language;
-            }
-            catch (HttpRequestException ex)
-            {
-                Console.Error.WriteLine(ex.Message);
-            }
+            if (language == Language) return this;
+            Dictionary<string, object?> args = new() { { "language", new string[][] { new string[] { language.ToCodeNameString() } } } };
+            Client.AddOperation(
+                Api.OperationBuilder.MainOperation(Api.MainCommand.update, Id, "block", new string[] { "properties" }, args),
+                () => Language = language
+            );
+            return this;
+        }
+
+        public override CodeBlock SetTitle(string title)
+        {
+            Dictionary<string, object?> args = new() { { "title", new string[][] { new string[] { title } } } };
+            Client.AddOperation(
+                Api.OperationBuilder.MainOperation(Api.MainCommand.update, Id, "block", new string[] { "properties" }, args),
+                () => Title = title
+            );
+            return this;
         }
     }
 }
