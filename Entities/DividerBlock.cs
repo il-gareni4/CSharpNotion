@@ -2,7 +2,7 @@
 {
     public class DividerBlock : BaseBlock
     {
-        public DividerBlock(Api.Response.RecordMapBlockValue blockValue) : base(blockValue)
+        public DividerBlock(Client client, Api.Response.RecordMapBlockValue blockValue) : base(client, blockValue)
         { }
     }
 }

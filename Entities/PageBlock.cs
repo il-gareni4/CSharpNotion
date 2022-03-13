@@ -5,7 +5,7 @@
         public string? Cover { get; set; }
         public float? CoverPosition { get; set; }
 
-        public PageBlock(Api.Response.RecordMapBlockValue blockValue) : base(blockValue)
+        public PageBlock(Client client, Api.Response.RecordMapBlockValue blockValue) : base(client, blockValue)
         {
             Cover = blockValue?.Format?.PageCover;
             CoverPosition = blockValue?.Format?.PageCoverPosition;

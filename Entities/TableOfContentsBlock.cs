@@ -4,7 +4,7 @@
     {
         public BlockColor Color { get; set; }
 
-        public TableOfContentsBlock(Api.Response.RecordMapBlockValue blockValue) : base(blockValue)
+        public TableOfContentsBlock(Client client, Api.Response.RecordMapBlockValue blockValue) : base(client, blockValue)
         {
             Color = BlockColorExtensions.ToBlockColor(blockValue?.Format?.BlockColor);
         }

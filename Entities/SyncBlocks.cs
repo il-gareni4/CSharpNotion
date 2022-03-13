@@ -2,7 +2,7 @@
 {
     public class SyncContainerBlock : ContentBlock
     {
-        public SyncContainerBlock(Api.Response.RecordMapBlockValue blockValue) : base(blockValue)
+        public SyncContainerBlock(Client client, Api.Response.RecordMapBlockValue blockValue) : base(client, blockValue)
         { }
     }
 
@@ -11,7 +11,7 @@
         public Api.General.Pointer? SyncContainerPointer { get; protected set; }
         protected SyncContainerBlock? SyncContainerBlock { get; set; }
 
-        public SyncReferenceBlock(Api.Response.RecordMapBlockValue blockValue) : base(blockValue)
+        public SyncReferenceBlock(Client client, Api.Response.RecordMapBlockValue blockValue) : base(client, blockValue)
         {
             SyncContainerPointer = blockValue?.Format?.TransclusionReferencePointer;
         }

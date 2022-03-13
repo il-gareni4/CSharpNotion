@@ -4,7 +4,7 @@
     {
         public bool Toggleable { get; set; }
 
-        public BaseHeaderBlock(Api.Response.RecordMapBlockValue blockValue) : base(blockValue)
+        public BaseHeaderBlock(Client client, Api.Response.RecordMapBlockValue blockValue) : base(client, blockValue)
         {
             Toggleable = blockValue?.Format?.Toggleable ?? false;
         }
@@ -40,19 +40,19 @@
 
     public class HeaderBlock : BaseHeaderBlock
     {
-        public HeaderBlock(Api.Response.RecordMapBlockValue blockValue) : base(blockValue)
+        public HeaderBlock(Client client, Api.Response.RecordMapBlockValue blockValue) : base(client, blockValue)
         { }
     }
 
     public class SubHeaderBlock : BaseHeaderBlock
     {
-        public SubHeaderBlock(Api.Response.RecordMapBlockValue blockValue) : base(blockValue)
+        public SubHeaderBlock(Client client, Api.Response.RecordMapBlockValue blockValue) : base(client, blockValue)
         { }
     }
 
     public class SubSubHeaderBlock : BaseHeaderBlock
     {
-        public SubSubHeaderBlock(Api.Response.RecordMapBlockValue blockValue) : base(blockValue)
+        public SubSubHeaderBlock(Client client, Api.Response.RecordMapBlockValue blockValue) : base(client, blockValue)
         { }
     }
 }

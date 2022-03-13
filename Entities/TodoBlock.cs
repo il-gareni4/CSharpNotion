@@ -4,7 +4,7 @@
     {
         public bool Checked { get; private set; }
 
-        public TodoBlock(Api.Response.RecordMapBlockValue blockValue) : base(blockValue)
+        public TodoBlock(Client client, Api.Response.RecordMapBlockValue blockValue) : base(client, blockValue)
         {
             string? checkedValue = blockValue?.Properties?.Checked?.ElementAt(0)[0];
             Checked = checkedValue == "Yes";

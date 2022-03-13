@@ -5,7 +5,7 @@
         public string? Icon { get; protected set; }
         public BlockColor Color { get; set; }
 
-        public IconColorContentBlock(Api.Response.RecordMapBlockValue blockValue) : base(blockValue)
+        public IconColorContentBlock(Client client, Api.Response.RecordMapBlockValue blockValue) : base(client, blockValue)
         {
             Icon = blockValue?.Format?.PageIcon ?? null;
             Color = BlockColorExtensions.ToBlockColor(blockValue?.Format?.BlockColor);

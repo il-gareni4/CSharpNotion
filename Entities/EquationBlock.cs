@@ -2,7 +2,7 @@
 {
     public class EquationBlock : TitleContainingBlock
     {
-        public EquationBlock(Api.Response.RecordMapBlockValue blockValue) : base(blockValue)
+        public EquationBlock(Client client, Api.Response.RecordMapBlockValue blockValue) : base(client, blockValue)
         {
         }
     }

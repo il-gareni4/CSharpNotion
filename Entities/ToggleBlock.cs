@@ -2,7 +2,7 @@
 {
     public class ToggleBlock : ColorTitleContentBlock
     {
-        public ToggleBlock(Api.Response.RecordMapBlockValue blockValue) : base(blockValue)
+        public ToggleBlock(Client client, Api.Response.RecordMapBlockValue blockValue) : base(client, blockValue)
         { }
     }
 }

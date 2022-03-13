@@ -2,7 +2,7 @@
 {
     public class BreadcrumbBlock : BaseBlock
     {
-        public BreadcrumbBlock(Api.Response.RecordMapBlockValue blockValue) : base(blockValue)
+        public BreadcrumbBlock(Client client, Api.Response.RecordMapBlockValue blockValue) : base(client, blockValue)
         {
         }
     }

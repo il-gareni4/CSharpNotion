@@ -9,7 +9,7 @@ namespace CSharpNotion.Entities
         public string? DisplaySource { get; protected set; }
         public string[]? FileIds { get; protected set; }
 
-        public FileContainingBlock(RecordMapBlockValue blockValue) : base(blockValue)
+        public FileContainingBlock(Client client, RecordMapBlockValue blockValue) : base(client, blockValue)
         {
             Caption = blockValue?.Properties?.Caption?.ElementAt(0)[0].GetString() ?? "";
             Source = blockValue?.Properties?.Source?.ElementAt(0)[0];
@@ -56,7 +56,7 @@ namespace CSharpNotion.Entities
 
         public virtual async Task UploadAndSetFile(string filePath, string? fileName = null)
         {
-            GetUploadFileUrlResponse urlsResponse = await Api.ApiMaster.UploadFile(Client.HttpClient, Id, filePath);
+            GetUploadFileUrlResponse urlsResponse = await Api.ApiMaster.UploadFile(Client, Id, filePath);
             await SetFileUrl(urlsResponse.Url!);
             if (fileName == "") return;
 

@@ -4,7 +4,7 @@ namespace CSharpNotion.Entities
 {
     public class VideoBlock : FileContainingBlock
     {
-        public VideoBlock(RecordMapBlockValue blockValue) : base(blockValue)
+        public VideoBlock(Client client, RecordMapBlockValue blockValue) : base(client, blockValue)
         { }
     }
 }

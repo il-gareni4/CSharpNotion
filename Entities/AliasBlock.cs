@@ -4,7 +4,7 @@
     {
         public Api.General.Pointer? AliasPointer { get; protected set; }
 
-        public AliasBlock(Api.Response.RecordMapBlockValue blockValue) : base(blockValue)
+        public AliasBlock(Client client, Api.Response.RecordMapBlockValue blockValue) : base(client, blockValue)
         {
             AliasPointer = blockValue?.Format?.AliasPointer;
         }

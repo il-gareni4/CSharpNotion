@@ -2,7 +2,7 @@
 {
     public class BulletedListBlock : ColorTitleContentBlock
     {
-        public BulletedListBlock(Api.Response.RecordMapBlockValue blockValue) : base(blockValue)
+        public BulletedListBlock(Client client, Api.Response.RecordMapBlockValue blockValue) : base(client, blockValue)
         { }
     }
 }

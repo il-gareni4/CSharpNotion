@@ -10,7 +10,7 @@
     {
         public FormatQuoteSize QuoteSize { get; private set; }
 
-        public QuoteBlock(Api.Response.RecordMapBlockValue blockValue) : base(blockValue)
+        public QuoteBlock(Client client, Api.Response.RecordMapBlockValue blockValue) : base(client, blockValue)
         {
             QuoteSize = blockValue?.Format?.QuoteSize switch
             {

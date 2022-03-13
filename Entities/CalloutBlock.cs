@@ -2,7 +2,7 @@
 {
     public class CalloutBlock : IconColorContentBlock
     {
-        public CalloutBlock(Api.Response.RecordMapBlockValue blockValue) : base(blockValue)
+        public CalloutBlock(Client client, Api.Response.RecordMapBlockValue blockValue) : base(client, blockValue)
         { }
     }
 }

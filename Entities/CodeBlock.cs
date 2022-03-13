@@ -110,7 +110,7 @@
         public bool WrapCode { get; protected set; }
         public CodeBlockLanguage Language { get; protected set; }
 
-        public CodeBlock(Api.Response.RecordMapBlockValue blockValue) : base(blockValue)
+        public CodeBlock(Client client, Api.Response.RecordMapBlockValue blockValue) : base(client, blockValue)
         {
             Caption = blockValue?.Properties?.Caption?.ElementAt(0)[0].GetString() ?? "";
             WrapCode = blockValue?.Format?.CodeWrap ?? false;

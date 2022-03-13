@@ -6,9 +6,9 @@ namespace CSharpNotion
 {
     public class Client
     {
-        private static readonly CookieContainer cookieContainer = new();
-        private static readonly HttpClientHandler httpClientHandler = new() { CookieContainer = cookieContainer };
-        public static readonly HttpClient HttpClient = new(httpClientHandler);
+        private readonly CookieContainer cookieContainer;
+        private readonly HttpClientHandler httpClientHandler;
+        public readonly HttpClient HttpClient;
         private readonly string _tokenV2;
 
         public static readonly JsonSerializerOptions SerializeOptions = new()
@@ -23,7 +23,10 @@ namespace CSharpNotion
         public Client(string tokenV2)
         {
             _tokenV2 = tokenV2;
+            cookieContainer = new CookieContainer();
             cookieContainer.Add(new Cookie("token_v2", _tokenV2, "", "www.notion.so"));
+            httpClientHandler = new() { CookieContainer = cookieContainer };
+            HttpClient = new HttpClient(httpClientHandler);
         }
 
         /// <summary>
@@ -38,13 +41,13 @@ namespace CSharpNotion
         /// <exception cref="TaskCanceledException"></exception>
         public async Task<T> GetBlockAsync<T>(string pageId) where T : Entities.BaseBlock => await GetBlockAsync<T>(HttpClient, pageId);
 
-        public static async Task<T> GetBlockAsync<T>(HttpClient httpClient, string pageId) where T : Entities.BaseBlock
+        public async Task<T> GetBlockAsync<T>(HttpClient httpClient, string pageId) where T : Entities.BaseBlock
         {
             pageId = Utils.ExtractId(pageId);
             SyncRecordValuesResponse recordValues = await QuickRequestSetup.SyncRecordValues(pageId, "block").Send(httpClient).DeserializeJson<SyncRecordValuesResponse>();
             if (recordValues?.RecordMap?.Block is null || recordValues.RecordMap.Block.Count == 0) throw new InvalidDataException("Invalid response");
             if (Constants.BlockToType.GetValueOrDefault(typeof(T)) != recordValues.RecordMap.Block.First().Value.Value!.Type) throw new InvalidDataException("Invalid type of block excepted");
-            return (T)Activator.CreateInstance(typeof(T), recordValues.RecordMap.Block.First().Value.Value)!; ;
+            return (T)Activator.CreateInstance(typeof(T), this, recordValues.RecordMap.Block.First().Value.Value)!; ;
         }
 
         /// <summary>
@@ -62,7 +65,7 @@ namespace CSharpNotion
             SyncRecordValuesResponse recordValues = await QuickRequestSetup.SyncRecordValues(pageId, "block").Send(HttpClient).DeserializeJson<SyncRecordValuesResponse>();
             if (recordValues?.RecordMap?.Block is null || recordValues.RecordMap.Block.Count == 0) throw new InvalidDataException("Invalid response");
             Type blockType = Constants.TypeToBlock[recordValues.RecordMap.Block.First().Value.Value!.Type!];
-            return (Entities.BaseBlock)Activator.CreateInstance(blockType, recordValues.RecordMap.Block.First().Value.Value)!;
+            return (Entities.BaseBlock)Activator.CreateInstance(blockType, this, recordValues.RecordMap.Block.First().Value.Value)!;
         }
     }
 }

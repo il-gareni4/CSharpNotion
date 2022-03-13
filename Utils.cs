@@ -18,10 +18,10 @@ namespace CSharpNotion
             httpRequest.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
         }
 
-        public static Entities.BaseBlock ConvertBlockFromResponse(Api.Response.RecordMapBlockValue blockValue)
+        public static Entities.BaseBlock ConvertBlockFromResponse(Client client, Api.Response.RecordMapBlockValue blockValue)
         {
             Type blockType = Constants.TypeToBlock[blockValue.Type ?? "text"];
-            return (Entities.BaseBlock)Activator.CreateInstance(blockType, blockValue)!;
+            return (Entities.BaseBlock)Activator.CreateInstance(blockType, client, blockValue)!;
         }
     }
 }

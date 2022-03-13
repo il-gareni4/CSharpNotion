@@ -2,7 +2,7 @@
 {
     public class TextBlock : ColorTitleContentBlock
     {
-        public TextBlock(Api.Response.RecordMapBlockValue blockValue) : base(blockValue)
+        public TextBlock(Client client, Api.Response.RecordMapBlockValue blockValue) : base(client, blockValue)
         { }
     }
 }

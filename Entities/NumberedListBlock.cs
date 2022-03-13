@@ -2,7 +2,7 @@
 {
     public class NumberedListBlock : ColorTitleContentBlock
     {
-        public NumberedListBlock(Api.Response.RecordMapBlockValue blockValue) : base(blockValue)
+        public NumberedListBlock(Client client, Api.Response.RecordMapBlockValue blockValue) : base(client, blockValue)
         { }
     }
 }

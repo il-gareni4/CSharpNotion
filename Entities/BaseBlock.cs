@@ -4,6 +4,7 @@ namespace CSharpNotion.Entities
 {
     public abstract class BaseBlock
     {
+        protected Client Client { get; set; }
         public string Id { get; init; }
         public int Version { get; protected set; }
         public string Type { get; protected set; }
@@ -21,8 +22,9 @@ namespace CSharpNotion.Entities
 
         protected virtual Api.General.Pointer SelfPointer => new(Id, "block");
 
-        protected BaseBlock(Api.Response.RecordMapBlockValue blockValue)
+        protected BaseBlock(Client client, Api.Response.RecordMapBlockValue blockValue)
         {
+            Client = client;
             Type = blockValue.Type ?? throw new ArgumentNullException();
             Id = blockValue.Id ?? throw new ArgumentNullException();
             Alive = blockValue.Alive;
@@ -106,7 +108,7 @@ namespace CSharpNotion.Entities
     {
         public string Title { get; protected set; }
 
-        protected TitleContainingBlock(Api.Response.RecordMapBlockValue blockValue) : base(blockValue)
+        protected TitleContainingBlock(Client client, Api.Response.RecordMapBlockValue blockValue) : base(client, blockValue)
         {
             Title = blockValue?.Properties?.Title?.ElementAt(0)[0].GetString() ?? "";
         }
@@ -133,7 +135,7 @@ namespace CSharpNotion.Entities
 
         public List<string> ContentIds { get; protected set; }
 
-        protected ContentBlock(Api.Response.RecordMapBlockValue blockValue) : base(blockValue)
+        protected ContentBlock(Client client, Api.Response.RecordMapBlockValue blockValue) : base(client, blockValue)
         {
             ContentIds = blockValue.Content?.ToList() ?? new List<string>();
         }
@@ -148,7 +150,7 @@ namespace CSharpNotion.Entities
                     .DeserializeJson<Api.Response.SyncRecordValuesResponse>();
                 if (syncResponse?.RecordMap?.Block is null) throw new InvalidDataException("Invalid response");
 
-                Content = syncResponse.RecordMap.Block.Select((pair) => Utils.ConvertBlockFromResponse(pair.Value.Value!)).ToList();
+                Content = syncResponse.RecordMap.Block.Select((pair) => Utils.ConvertBlockFromResponse(Client, pair.Value.Value!)).ToList();
             }
             return Content;
         }
@@ -178,7 +180,7 @@ namespace CSharpNotion.Entities
                 Api.OperationBuilder.ListOperation(Api.ListCommand.listAfter, Id, newBlock.Id, ContentIds.LastOrDefault())
             };
             (await QuickRequestSetup.SaveTransactions(operations).Send(Client.HttpClient)).EnsureSuccessStatusCode();
-            T newBlockInstance = (T)Activator.CreateInstance(typeof(T), newBlock)!;
+            T newBlockInstance = (T)Activator.CreateInstance(typeof(T), Client, newBlock)!;
             ContentIds.Add(newBlock.Id);
             Content.Add(newBlockInstance);
             return newBlockInstance;
@@ -189,7 +191,7 @@ namespace CSharpNotion.Entities
     {
         public string Title { get; protected set; }
 
-        protected TitleContentBlock(Api.Response.RecordMapBlockValue blockValue) : base(blockValue)
+        protected TitleContentBlock(Client client, Api.Response.RecordMapBlockValue blockValue) : base(client, blockValue)
         {
             Title = blockValue?.Properties?.Title?.ElementAt(0)[0].GetString() ?? "";
         }
@@ -214,7 +216,7 @@ namespace CSharpNotion.Entities
     {
         public BlockColor Color { get; set; }
 
-        protected ColorTitleContentBlock(Api.Response.RecordMapBlockValue blockValue) : base(blockValue)
+        protected ColorTitleContentBlock(Client client, Api.Response.RecordMapBlockValue blockValue) : base(client, blockValue)
         {
             Color = BlockColorExtensions.ToBlockColor(blockValue?.Format?.BlockColor);
         }
