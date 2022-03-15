@@ -17,7 +17,7 @@ namespace CSharpNotion.Api
 
     internal static class OperationBuilder
     {
-        public static Operation ListOperation(ListCommand command, string parentId, string childId, string? beforeAfterId = null)
+        public static Operation ListInsertingOperation(ListCommand command, string parentId, string childId, string? beforeAfterId = null)
         {
             Dictionary<string, object?> args = new();
             args["id"] = childId;
@@ -28,6 +28,18 @@ namespace CSharpNotion.Api
                 Args = args,
                 Command = command.ToString(),
                 Path = new string[1] { "content" },
+                Pointer = new General.Pointer(parentId, "block")
+            };
+        }
+
+        public static Operation ListRemovingOperation(string parentId, string childId)
+        {
+            Dictionary<string, object?> args = new() { { "id", childId } };
+            return new Operation()
+            {
+                Args = args,
+                Command = "listRemove",
+                Path = Array.Empty<string>(),
                 Pointer = new General.Pointer(parentId, "block")
             };
         }
@@ -50,11 +62,11 @@ namespace CSharpNotion.Api
             };
         }
 
-        public static Operation MainOperation(MainCommand command, string blockId, string blockTable, string[] path, Dictionary<string, object?> args) => new Operation
+        public static Operation MainOperation(MainCommand command, string blockId, string table, string[] path, Dictionary<string, object?> args) => new Operation
         {
             Command = command.ToString(),
             Path = path,
-            Pointer = new General.Pointer(blockId, blockTable),
+            Pointer = new General.Pointer(blockId, table),
             Args = args
         };
     }

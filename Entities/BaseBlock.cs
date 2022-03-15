@@ -50,7 +50,7 @@ namespace CSharpNotion.Entities
             RecordMapBlockValue newBlock = Utils.CreateNewBlockValue<T>(SpaceId, Id);
             T newBlockInstance = (T)Activator.CreateInstance(typeof(T), Client, newBlock)!;
             Client.AddOperation(Api.OperationBuilder.FromBlockValueToSetOperation(newBlock));
-            Client.AddOperation(Api.OperationBuilder.ListOperation(whereInsert, ParentId, newBlock.Id!, Id));
+            Client.AddOperation(Api.OperationBuilder.ListInsertingOperation(whereInsert, ParentId, newBlock.Id!, Id));
             return newBlockInstance;
         }
     }
@@ -99,7 +99,7 @@ namespace CSharpNotion.Entities
             T newBlockInstance = (T)Activator.CreateInstance(typeof(T), Client, newBlock)!;
             Client.AddOperation(Api.OperationBuilder.FromBlockValueToSetOperation(newBlock));
             Client.AddOperation(
-                Api.OperationBuilder.ListOperation(Api.ListCommand.listAfter, Id, newBlock.Id!, ContentIds.LastOrDefault()),
+                Api.OperationBuilder.ListInsertingOperation(Api.ListCommand.listAfter, Id, newBlock.Id!, ContentIds.LastOrDefault()),
                 () =>
                 {
                     ContentIds.Add(newBlock.Id!);
@@ -129,7 +129,7 @@ namespace CSharpNotion.Entities
             T newBlockInstance = (T)Activator.CreateInstance(typeof(T), Client, newBlock)!;
             Client.AddOperation(Api.OperationBuilder.FromBlockValueToSetOperation(newBlock));
             Client.AddOperation(
-                Api.OperationBuilder.ListOperation(Api.ListCommand.listBefore, Id, newBlock.Id!, blockId),
+                Api.OperationBuilder.ListInsertingOperation(Api.ListCommand.listBefore, Id, newBlock.Id!, blockId),
                 () =>
                 {
                     ContentIds.Insert(index, newBlock.Id!);
@@ -137,6 +137,44 @@ namespace CSharpNotion.Entities
                 }
             );
             return newBlockInstance;
+        }
+
+        public virtual ContentBlock RemoveBlock(int index)
+        {
+            if (index >= ContentIds.Count) throw new IndexOutOfRangeException();
+
+            string blockId = ContentIds[index];
+            Dictionary<string, object?> args = new() { { "alive", false } };
+            Client.AddOperation(Api.OperationBuilder.MainOperation(Api.MainCommand.update, blockId, "block", Array.Empty<string>(), args));
+            Client.AddOperation(
+                Api.OperationBuilder.ListRemovingOperation(Id, blockId),
+                () =>
+                {
+                    ContentIds.Remove(blockId);
+                    if (Content.Count > index) Content.RemoveAll((block) => block.Id == blockId);
+                }
+            );
+            return this;
+        }
+
+        public virtual ContentBlock RemoveBlock(string blockId)
+        {
+            blockId = Utils.ExtractId(blockId);
+            int blockIndex = ContentIds.IndexOf(blockId);
+            if (blockIndex == -1) throw new ArgumentException("Block with that ID isn't a child of current block", nameof(blockId));
+            return RemoveBlock(blockIndex);
+        }
+
+        public virtual ContentBlock RemoveBlocks(IEnumerable<int> indexes)
+        {
+            foreach (int index in indexes) RemoveBlock(index);
+            return this;
+        }
+
+        public virtual ContentBlock RemoveBlocks(IEnumerable<string> blockIds)
+        {
+            foreach (string id in blockIds) RemoveBlock(id);
+            return this;
         }
     }
 
