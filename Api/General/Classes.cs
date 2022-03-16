@@ -11,7 +11,7 @@ namespace CSharpNotion.Api.General
         { Id = id; Table = table; }
     }
 
-    public class BlockFormat
+    internal class BlockFormat
     {
         [JsonPropertyName("copied_from_pointer")]
         public Pointer? CopiedFromPointer { get; set; }

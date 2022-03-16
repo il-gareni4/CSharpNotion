@@ -1,6 +1,6 @@
 ﻿namespace CSharpNotion.Api.Request
 {
-    public class GetUploadFileUrl
+    internal class GetUploadFileUrl
     {
         public string Bucket { get; set; } = "secure";
         public string? ContentType { get; set; }

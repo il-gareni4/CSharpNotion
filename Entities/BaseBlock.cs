@@ -21,8 +21,6 @@ namespace CSharpNotion.Entities
         public string ParentTable { get; protected set; }
         public string SpaceId { get; protected set; }
 
-        protected virtual Api.General.Pointer SelfPointer => new(Id, "block");
-
         protected BaseBlock(Client client, RecordMapBlockValue blockValue)
         {
             Client = client;

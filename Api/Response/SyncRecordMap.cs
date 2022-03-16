@@ -2,12 +2,12 @@
 
 namespace CSharpNotion.Api.Response
 {
-    public class SyncRecordValuesResponse
+    internal class SyncRecordValuesResponse
     {
         public SyncRecordMap? RecordMap { get; set; }
     }
 
-    public class SyncRecordMap
+    internal class SyncRecordMap
     {
         [JsonPropertyName("space_view")]
         public Dictionary<string, object>? SpaceView { get; set; }

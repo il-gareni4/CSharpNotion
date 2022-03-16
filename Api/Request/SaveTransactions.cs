@@ -1,18 +1,18 @@
 ﻿namespace CSharpNotion.Api.Request
 {
-    public class SaveTransactions
+    internal class SaveTransactions
     {
         public string RequestId { get; set; } = Guid.NewGuid().ToString();
         public Transaction[]? Transactions { get; set; }
     }
 
-    public class Transaction
+    internal class Transaction
     {
         public string Id { get; set; } = Guid.NewGuid().ToString();
         public Operation[]? Operations { get; set; }
     }
 
-    public class Operation
+    internal class Operation
     {
         public Dictionary<string, object?>? Args { get; set; }
         public string? Command { get; set; }

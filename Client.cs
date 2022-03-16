@@ -7,9 +7,9 @@ namespace CSharpNotion
 {
     public class Client
     {
+        public readonly HttpClient HttpClient;
         private readonly CookieContainer cookieContainer;
         private readonly HttpClientHandler httpClientHandler;
-        public readonly HttpClient HttpClient;
         private readonly string _tokenV2;
         private readonly List<Transaction> _transactions = new();
         private readonly List<Operation> _operations = new();
@@ -69,15 +69,15 @@ namespace CSharpNotion
             return Utils.ConvertBlockFromResponse(this, recordValues.RecordMap.Block.First().Value.Value!);
         }
 
-        public void AddOperation(Operation operation) => _operations.Add(operation);
+        internal void AddOperation(Operation operation) => _operations.Add(operation);
 
-        public void AddOperation(Operation operation, Action action)
+        internal void AddOperation(Operation operation, Action action)
         {
             _operations.Add(operation);
             _actions.Add(action);
         }
 
-        public void OperationsToTransaction()
+        internal void OperationsToTransaction()
         {
             if (_operations.Count == 0) return;
             else

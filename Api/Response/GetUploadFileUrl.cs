@@ -1,6 +1,6 @@
 ﻿namespace CSharpNotion.Api.Response
 {
-    public class GetUploadFileUrlResponse
+    internal class GetUploadFileUrlResponse
     {
         public string? SignedGetUrl { get; set; }
         public string? SignedPutUrl { get; set; }

@@ -2,7 +2,7 @@
 
 namespace CSharpNotion.Api.Request
 {
-    public class LoadCachedPageChunk
+    internal class LoadCachedPageChunk
     {
         public LoadCachedPageChunkPage? Page { get; set; }
         public int Limit { get; set; } = 30;
@@ -11,12 +11,12 @@ namespace CSharpNotion.Api.Request
         public bool VerticalColumns { get; set; }
     }
 
-    public class LoadCachedPageChunkPage
+    internal class LoadCachedPageChunkPage
     {
         public string? Id { get; set; }
     }
 
-    public class LoadCachedPageChunkCursor
+    internal class LoadCachedPageChunkCursor
     {
         public string[] Stack { get; set; } = Array.Empty<string>();
     }

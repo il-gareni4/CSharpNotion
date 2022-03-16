@@ -3,30 +3,30 @@ using System.Text.Json.Serialization;
 
 namespace CSharpNotion.Api.Response
 {
-    public class PageChunk
+    internal class PageChunk
     {
         public ChunkCursor? Cursor { get; set; }
         public RecordMap? RecordMap { get; set; }
     }
 
-    public class ChunkCursor
+    internal class ChunkCursor
     {
         public ChunkCursorElement[][] Stack { get; set; } = Array.Empty<ChunkCursorElement[]>();
     }
 
-    public class ChunkCursorElement
+    internal class ChunkCursorElement
     {
         public string? Table { get; set; }
         public string? Id { get; set; }
         public int Index { get; set; }
     }
 
-    public class RecordMap
+    internal class RecordMap
     {
         public Dictionary<string, RecordMapBlock>? Block { get; set; }
     }
 
-    public class RecordMapBlock
+    internal class RecordMapBlock
     {
         public string? Role { get; set; }
         public RecordMapBlockValue? Value { get; set; }
@@ -37,7 +37,7 @@ namespace CSharpNotion.Api.Response
         public string? Id { get; set; }
         public int Version { get; set; }
         public string? Type { get; set; }
-        public RecordMapBlockProperties? Properties { get; set; }
+        internal RecordMapBlockProperties? Properties { get; set; }
         public string[]? Content { get; set; }
         public RecordMapBlockPermission[]? Permissions { get; set; }
 
@@ -70,7 +70,7 @@ namespace CSharpNotion.Api.Response
         [JsonPropertyName("space_id")]
         public string? SpaceId { get; set; }
 
-        public General.BlockFormat? Format { get; set; }
+        internal General.BlockFormat? Format { get; set; }
         public string[]? Discussions { get; set; }
 
         [JsonPropertyName("file_ids")]
@@ -86,7 +86,7 @@ namespace CSharpNotion.Api.Response
         public string? UserId { get; set; }
     }
 
-    public class RecordMapBlockProperties
+    internal class RecordMapBlockProperties
     {
         public JsonElement[][]? Title { get; set; }
         public string[][]? Checked { get; set; }
