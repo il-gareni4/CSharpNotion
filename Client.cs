@@ -90,6 +90,7 @@ namespace CSharpNotion
         public async Task Commit()
         {
             OperationsToTransaction();
+            if (_transactions.Count == 0) return;
             (await QuickRequestSetup.SaveTransactions(_transactions.ToArray()).Send(HttpClient)).EnsureSuccessStatusCode();
             foreach (Action action in _actions) action();
             _transactions.Clear();

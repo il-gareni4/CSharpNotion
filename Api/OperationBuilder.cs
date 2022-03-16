@@ -39,7 +39,7 @@ namespace CSharpNotion.Api
             {
                 Args = args,
                 Command = "listRemove",
-                Path = Array.Empty<string>(),
+                Path = new string[1] { "content" },
                 Pointer = new General.Pointer(parentId, "block")
             };
         }
