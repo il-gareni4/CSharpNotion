@@ -22,8 +22,8 @@ namespace CSharpNotion.Entities
         public abstract T SetFileUrl(string source);
 
         /// <summary>
-        /// Uploads a file to the Notion server and sets a link (<c>Source</c>) to the file to the block.
-        /// If you have just created a new block, you need to commit the action before using this method.
+        /// Uploads a file to the Notion server and sets a link (<see cref="ContentBlock.Content"/>) to the file to the block.
+        /// If you have just created a new block, you need to <see cref="Client.Commit"/> the inserting action before using this method.
         /// </summary>
         /// <param name="filePath">Path of the file you need to upload</param>
         /// <param name="fileName">File name that will be displayed on the Notion</param>

@@ -43,6 +43,9 @@ namespace CSharpNotion.Entities
             LastEditedById = blockValue?.LastEditedById;
         }
 
+        /// <summary>
+        /// The same as <see cref="Client.Commit"/>
+        /// </summary>
         public virtual async Task Commit() => await Client.Commit();
 
         /// <summary>
@@ -75,10 +78,16 @@ namespace CSharpNotion.Entities
         public abstract T SetTitle(string title);
     }
 
+    /// <summary>
+    /// Represents a block that is capable of owning child blocks
+    /// </summary>
     public abstract class ContentBlock : BaseBlock
     {
         protected List<BaseBlock> Content { get; set; } = new List<BaseBlock>();
 
+        /// <summary>
+        /// IDs of child blocks
+        /// </summary>
         public List<string> ContentIds { get; protected set; }
 
         protected ContentBlock(Client client, RecordMapBlockValue blockValue) : base(client, blockValue)
@@ -86,6 +95,14 @@ namespace CSharpNotion.Entities
             ContentIds = blockValue.Content?.ToList() ?? new List<string>();
         }
 
+        /// <summary>
+        /// Asynchronously fetches all blocks by <see cref="ContentIds"/>
+        /// </summary>
+        /// <remarks>
+        /// You can always explicitly cast <see cref="BaseBlock"/> to any other child class. Check <see cref="BaseBlock.Type"/> before casting to avoid errors.
+        /// </remarks>
+        /// <returns><see cref="List{T}"/> of <see cref="BaseBlock"/></returns>
+        /// <exception cref="InvalidDataException">Server response is invalid</exception>
         public virtual async Task<List<BaseBlock>> GetContent()
         {
             if (ContentIds.Count != Content.Count)
@@ -101,6 +118,12 @@ namespace CSharpNotion.Entities
             return Content;
         }
 
+        /// <summary>
+        /// Creates a new operation that
+        /// appends a new <typeparamref name="T"/> at the end of the <see cref="ContentBlock"/>
+        /// </summary>
+        /// <typeparam name="T">Type of block</typeparam>
+        /// <returns>New <typeparamref name="T"/></returns>
         public virtual T AppendBlock<T>() where T : BaseBlock
         {
             RecordMapBlockValue newBlock = Utils.CreateNewBlockValue<T>(SpaceId, Id);
@@ -118,6 +141,15 @@ namespace CSharpNotion.Entities
             return newBlockInstance;
         }
 
+        /// <summary>
+        /// Creates a new operation that
+        /// inserts a new <typeparamref name="T"/> before or after the child block with <paramref name="blockId"/>.
+        /// </summary>
+        /// <typeparam name="T">Type of block.</typeparam>
+        /// <param name="whereInsert">Specifies where to insert the new block.</param>
+        /// <param name="blockId">ID of child block.</param>
+        /// <returns>New <typeparamref name="T"/>.</returns>
+        /// <exception cref="ArgumentException">Block with <paramref name="blockId"/> isn't a child of current block.</exception>
         public virtual T InsertBlock<T>(Api.ListCommand whereInsert, string blockId) where T : BaseBlock
         {
             blockId = Utils.ExtractId(blockId);
@@ -128,10 +160,18 @@ namespace CSharpNotion.Entities
             return InsertBlock<T>(relativeBlockIndex);
         }
 
+        /// <summary>
+        /// Creates a new operation that
+        /// inserts a new <typeparamref name="T"/> before or after the child block at <paramref name="index"/>.
+        /// </summary>
+        /// <typeparam name="T">Type of block.</typeparam>
+        /// <param name="index">The zero-based index at which block should be inserted.</param>
+        /// <returns>New <typeparamref name="T"/>.</returns>
+        /// <exception cref="IndexOutOfRangeException">index is less than 0. -or- index is equal or greater than <see cref="ContentIds"/> Count</exception>
         public virtual T InsertBlock<T>(int index) where T : BaseBlock
         {
             if (index == ContentIds.Count) throw new IndexOutOfRangeException("If you want to append block to the end of content, use AppendBlock<T>()");
-            else if (index > ContentIds.Count) throw new IndexOutOfRangeException();
+            else if (index > ContentIds.Count || index < 0) throw new IndexOutOfRangeException();
 
             string? blockId = ContentIds.Count == 0 ? null : ContentIds[index];
             RecordMapBlockValue newBlock = Utils.CreateNewBlockValue<T>(SpaceId, Id);
@@ -149,9 +189,16 @@ namespace CSharpNotion.Entities
             return newBlockInstance;
         }
 
+        /// <summary>
+        /// Creates a new operation that
+        /// deletes a block at the specific <paramref name="index"/>.
+        /// </summary>
+        /// <param name="index">The zero-based index at which block should be deleted.</param>
+        /// <returns>This block.</returns>
+        /// <exception cref="IndexOutOfRangeException">index is less than 0. -or- index is equal or greater than <see cref="ContentIds"/> Count.</exception>
         public virtual ContentBlock RemoveBlock(int index)
         {
-            if (index >= ContentIds.Count) throw new IndexOutOfRangeException();
+            if (index >= ContentIds.Count || index < 0) throw new IndexOutOfRangeException();
 
             string blockId = ContentIds[index];
             Dictionary<string, object?> args = new() { { "alive", false } };
@@ -168,6 +215,13 @@ namespace CSharpNotion.Entities
             return this;
         }
 
+        /// <summary>
+        /// Creates a new operation that
+        /// removes a block with <paramref name="blockId"/>
+        /// </summary>
+        /// <param name="blockId">ID of child block to be removed.</param>
+        /// <returns>This block.</returns>
+        /// <exception cref="ArgumentException">Block with <paramref name="blockId"/> isn't a child of current block.</exception>
         public virtual ContentBlock RemoveBlock(string blockId)
         {
             blockId = Utils.ExtractId(blockId);
@@ -176,12 +230,24 @@ namespace CSharpNotion.Entities
             return RemoveBlock(blockIndex);
         }
 
+        /// <summary>
+        /// Creates an operations that
+        /// remove blocks at <paramref name="indexes"/>.
+        /// </summary>
+        /// <param name="indexes">The zero-based indexes at which blocks should be removed.</param>
+        /// <inheritdoc cref="RemoveBlock(int)"/>
         public virtual ContentBlock RemoveBlocks(IEnumerable<int> indexes)
         {
             foreach (int index in indexes) RemoveBlock(index);
             return this;
         }
 
+        /// <summary>
+        /// Creates an operations that
+        /// remove blocks with <paramref name="blockIds"/>.
+        /// </summary>
+        /// <param name="blockIds">IDs of child blocks to be removed.</param>
+        /// <inheritdoc cref="RemoveBlock(string)"/>
         public virtual ContentBlock RemoveBlocks(IEnumerable<string> blockIds)
         {
             foreach (string id in blockIds) RemoveBlock(id);
@@ -198,6 +264,12 @@ namespace CSharpNotion.Entities
             Title = Utils.RecieveTitle(blockValue);
         }
 
+        /// <summary>
+        /// Creates a new operation that
+        /// sets a new block title
+        /// </summary>
+        /// <param name="title">New title</param>
+        /// <returns>This block</returns>
         public abstract T SetTitle(string title);
     }
 
