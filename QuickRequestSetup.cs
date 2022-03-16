@@ -1,4 +1,6 @@
-﻿using MimeTypes;
+﻿using CSharpNotion.Api.General;
+using CSharpNotion.Api.Request;
+using MimeTypes;
 
 namespace CSharpNotion
 {
@@ -7,9 +9,9 @@ namespace CSharpNotion
         public static HttpRequestMessage LoadPageChunk(string pageId, int limit = 30)
         {
             HttpRequestMessage request = new(HttpMethod.Post, Constants.ApiUrl + "/loadCachedPageChunk");
-            Api.Request.LoadCachedPageChunk body = new()
+            LoadCachedPageChunk body = new()
             {
-                Page = new Api.Request.LoadCachedPageChunkPage()
+                Page = new LoadCachedPageChunkPage()
                 {
                     Id = pageId
                 },
@@ -20,18 +22,18 @@ namespace CSharpNotion
             return request;
         }
 
-        public static HttpRequestMessage LoadPageChunk(Api.Request.LoadCachedPageChunk requestBody)
+        public static HttpRequestMessage LoadPageChunk(LoadCachedPageChunk requestBody)
         {
             HttpRequestMessage request = new(HttpMethod.Post, Constants.ApiUrl + "/loadCachedPageChunk");
             Utils.SetHttpContent(ref request, requestBody);
             return request;
         }
 
-        public static HttpRequestMessage SyncRecordValues(IEnumerable<Api.General.Pointer> pointers)
+        public static HttpRequestMessage SyncRecordValues(IEnumerable<Pointer> pointers)
         {
             HttpRequestMessage request = new(HttpMethod.Post, Constants.ApiUrl + "/syncRecordValues");
-            Api.Request.SyncRecordElement[] elements = pointers.Select((pointer) => new Api.Request.SyncRecordElement() { Pointer = pointer }).ToArray();
-            Api.Request.SyncRecordValues requestBody = new() { Requests = elements };
+            SyncRecordElement[] elements = pointers.Select((pointer) => new SyncRecordElement() { Pointer = pointer }).ToArray();
+            SyncRecordValues requestBody = new() { Requests = elements };
             Utils.SetHttpContent(ref request, requestBody);
             return request;
         }
@@ -39,12 +41,12 @@ namespace CSharpNotion
         public static HttpRequestMessage SyncRecordValues(string guid, string table)
         {
             HttpRequestMessage request = new(HttpMethod.Post, Constants.ApiUrl + "/syncRecordValues");
-            Api.Request.SyncRecordValues requestBody = new()
+            SyncRecordValues requestBody = new()
             {
-                Requests = new Api.Request.SyncRecordElement[1] {
-                    new Api.Request.SyncRecordElement
+                Requests = new SyncRecordElement[1] {
+                    new SyncRecordElement
                     {
-                        Pointer = new Api.General.Pointer(guid, table)
+                        Pointer = new Pointer(guid, table)
                     }
                 }
             };
@@ -52,32 +54,34 @@ namespace CSharpNotion
             return request;
         }
 
-        public static HttpRequestMessage SaveTransactions(Api.Request.SaveTransactions requestBody)
+        public static HttpRequestMessage SaveTransactions(SaveTransactions requestBody)
         {
             HttpRequestMessage request = new(HttpMethod.Post, Constants.ApiUrl + "/saveTransactions");
             Utils.SetHttpContent(ref request, requestBody);
             return request;
         }
 
-        public static HttpRequestMessage SaveTransactions(Api.Request.Operation[] operations) => SaveTransactions(new Api.Request.SaveTransactions()
+        public static HttpRequestMessage SaveTransactions(IEnumerable<Transaction> transactions) => SaveTransactions(new SaveTransactions()
         {
-            Transactions = new Api.Request.Transaction[]
-                {
-                    new Api.Request.Transaction()
-                    {
-                        Operations = operations
-                    }
-                }
+            Transactions = transactions.ToArray()
         });
 
-        public static HttpRequestMessage SaveTransactions(Api.Request.Operation operation) => SaveTransactions(new Api.Request.Operation[] { operation });
+        public static HttpRequestMessage SaveTransactions(IEnumerable<Operation> operations) => SaveTransactions(new Transaction[]
+        {
+            new Transaction()
+            {
+                Operations = operations.ToArray()
+            }
+        });
 
-        public static HttpRequestMessage GetUploadFileUrl(Api.General.Pointer pointer, FileInfo fileInfo)
+        public static HttpRequestMessage SaveTransactions(Operation operation) => SaveTransactions(new Operation[] { operation });
+
+        public static HttpRequestMessage GetUploadFileUrl(Pointer pointer, FileInfo fileInfo)
         {
             if (!fileInfo.Exists) throw new ArgumentException("filePath");
 
             HttpRequestMessage request = new(HttpMethod.Post, Constants.ApiUrl + "/getUploadFileUrl");
-            Api.Request.GetUploadFileUrl requestBody = new()
+            GetUploadFileUrl requestBody = new()
             {
                 ContentType = MimeTypeMap.GetMimeType(fileInfo.Extension),
                 Name = fileInfo.Name,

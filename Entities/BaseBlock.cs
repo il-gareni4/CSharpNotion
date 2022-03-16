@@ -45,9 +45,17 @@ namespace CSharpNotion.Entities
 
         public virtual async Task Commit() => await Client.Commit();
 
+        /// <summary>
+        /// Creates a new operation that
+        /// inserts a new <typeparamref name="T"/> before or after the current block
+        /// </summary>
+        /// <typeparam name="T">New block type</typeparam>
+        /// <param name="whereInsert">Specifies where to insert the new block</param>
+        /// <returns>New <typeparamref name="T"/></returns>
         public virtual T InsertBlockAround<T>(Api.ListCommand whereInsert) where T : BaseBlock
         {
-            RecordMapBlockValue newBlock = Utils.CreateNewBlockValue<T>(SpaceId, Id);
+            Client.OperationsToTransaction();
+            RecordMapBlockValue newBlock = Utils.CreateNewBlockValue<T>(SpaceId, ParentId);
             T newBlockInstance = (T)Activator.CreateInstance(typeof(T), Client, newBlock)!;
             Client.AddOperation(Api.OperationBuilder.FromBlockValueToSetOperation(newBlock));
             Client.AddOperation(Api.OperationBuilder.ListInsertingOperation(whereInsert, ParentId, newBlock.Id!, Id));
@@ -97,6 +105,7 @@ namespace CSharpNotion.Entities
         {
             RecordMapBlockValue newBlock = Utils.CreateNewBlockValue<T>(SpaceId, Id);
             T newBlockInstance = (T)Activator.CreateInstance(typeof(T), Client, newBlock)!;
+            Client.OperationsToTransaction();
             Client.AddOperation(Api.OperationBuilder.FromBlockValueToSetOperation(newBlock));
             Client.AddOperation(
                 Api.OperationBuilder.ListInsertingOperation(Api.ListCommand.listAfter, Id, newBlock.Id!, ContentIds.LastOrDefault()),
@@ -127,6 +136,7 @@ namespace CSharpNotion.Entities
             string? blockId = ContentIds.Count == 0 ? null : ContentIds[index];
             RecordMapBlockValue newBlock = Utils.CreateNewBlockValue<T>(SpaceId, Id);
             T newBlockInstance = (T)Activator.CreateInstance(typeof(T), Client, newBlock)!;
+            Client.OperationsToTransaction();
             Client.AddOperation(Api.OperationBuilder.FromBlockValueToSetOperation(newBlock));
             Client.AddOperation(
                 Api.OperationBuilder.ListInsertingOperation(Api.ListCommand.listBefore, Id, newBlock.Id!, blockId),
@@ -145,6 +155,7 @@ namespace CSharpNotion.Entities
 
             string blockId = ContentIds[index];
             Dictionary<string, object?> args = new() { { "alive", false } };
+            Client.OperationsToTransaction();
             Client.AddOperation(Api.OperationBuilder.MainOperation(Api.MainCommand.update, blockId, "block", Array.Empty<string>(), args));
             Client.AddOperation(
                 Api.OperationBuilder.ListRemovingOperation(Id, blockId),

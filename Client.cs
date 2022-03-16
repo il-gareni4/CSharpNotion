@@ -11,6 +11,7 @@ namespace CSharpNotion
         private readonly HttpClientHandler httpClientHandler;
         public readonly HttpClient HttpClient;
         private readonly string _tokenV2;
+        private readonly List<Transaction> _transactions = new();
         private readonly List<Operation> _operations = new();
         private readonly List<Action> _actions = new();
 
@@ -76,11 +77,22 @@ namespace CSharpNotion
             _actions.Add(action);
         }
 
+        public void OperationsToTransaction()
+        {
+            if (_operations.Count == 0) return;
+            else
+            {
+                _transactions.Add(new Transaction() { Operations = _operations.ToArray() });
+                _operations.Clear();
+            }
+        }
+
         public async Task Commit()
         {
-            (await QuickRequestSetup.SaveTransactions(_operations.ToArray()).Send(HttpClient)).EnsureSuccessStatusCode();
+            OperationsToTransaction();
+            (await QuickRequestSetup.SaveTransactions(_transactions.ToArray()).Send(HttpClient)).EnsureSuccessStatusCode();
             foreach (Action action in _actions) action();
-            _operations.Clear();
+            _transactions.Clear();
         }
     }
 }

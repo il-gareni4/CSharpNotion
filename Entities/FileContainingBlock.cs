@@ -21,26 +21,12 @@ namespace CSharpNotion.Entities
 
         public abstract T SetFileUrl(string source);
 
-        //{
-        //    if (source == Source) return;
-        //    try
-        //    {
-        //        Dictionary<string, object?> propertiesArgs = new() { { "source", new string[][] { new string[] { source } } } };
-        //        Dictionary<string, object?> formatArgs = new() { { "display_source", source } };
-        //        List<Api.Request.Operation> operations = new() {
-        //            Api.OperationBuilder.MainOperation(Api.MainCommand.update, Id, "block", new string[] { "properties" }, propertiesArgs),
-        //            Api.OperationBuilder.MainOperation(Api.MainCommand.update, Id, "block", new string[] { "format" }, formatArgs)
-        //        };
-        //        (await QuickRequestSetup.SaveTransactions(operations.ToArray()).Send(Client.HttpClient)).EnsureSuccessStatusCode();
-        //        Source = source;
-        //        DisplaySource = source;
-        //    }
-        //    catch (HttpRequestException ex)
-        //    {
-        //        Console.Error.WriteLine(ex.Message);
-        //    }
-        //}
-
+        /// <summary>
+        /// Uploads a file to the Notion server and sets a link (<c>Source</c>) to the file to the block.
+        /// If you have just created a new block, you need to commit the action before using this method.
+        /// </summary>
+        /// <param name="filePath">Path of the file you need to upload</param>
+        /// <param name="fileName">File name that will be displayed on the Notion</param>
         public virtual async Task UploadAndSetFileAsync(string filePath, string? fileName = null)
         {
             GetUploadFileUrlResponse urlsResponse = await Api.ApiMaster.UploadFile(Client, Id, filePath);
