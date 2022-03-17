@@ -6,53 +6,35 @@ namespace CSharpNotion
 {
     internal static class QuickRequestSetup
     {
-        public static HttpRequestMessage LoadPageChunk(string pageId, int limit = 30)
+        public static HttpRequestMessage SyncRecordValues(SyncRecordValues requestBody)
         {
-            HttpRequestMessage request = new(HttpMethod.Post, Constants.ApiUrl + "/loadCachedPageChunk");
-            LoadCachedPageChunk body = new()
-            {
-                Page = new LoadCachedPageChunkPage()
-                {
-                    Id = pageId
-                },
-                Limit = limit,
-                ChunkNumber = 1
-            };
-            Utils.SetHttpContent(ref request, body);
-            return request;
-        }
-
-        public static HttpRequestMessage LoadPageChunk(LoadCachedPageChunk requestBody)
-        {
-            HttpRequestMessage request = new(HttpMethod.Post, Constants.ApiUrl + "/loadCachedPageChunk");
+            HttpRequestMessage request = new(HttpMethod.Post, Constants.ApiUrl + "/syncRecordValues");
             Utils.SetHttpContent(ref request, requestBody);
             return request;
         }
 
         public static HttpRequestMessage SyncRecordValues(IEnumerable<Pointer> pointers)
         {
-            HttpRequestMessage request = new(HttpMethod.Post, Constants.ApiUrl + "/syncRecordValues");
             SyncRecordElement[] elements = pointers.Select((pointer) => new SyncRecordElement() { Pointer = pointer }).ToArray();
             SyncRecordValues requestBody = new() { Requests = elements };
-            Utils.SetHttpContent(ref request, requestBody);
-            return request;
+            return SyncRecordValues(requestBody);
         }
 
-        public static HttpRequestMessage SyncRecordValues(string guid, string table)
+        public static HttpRequestMessage SyncRecordValues(Pointer pointer)
         {
-            HttpRequestMessage request = new(HttpMethod.Post, Constants.ApiUrl + "/syncRecordValues");
             SyncRecordValues requestBody = new()
             {
                 Requests = new SyncRecordElement[1] {
                     new SyncRecordElement
                     {
-                        Pointer = new Pointer(guid, table)
+                        Pointer = pointer
                     }
                 }
             };
-            Utils.SetHttpContent(ref request, requestBody);
-            return request;
+            return SyncRecordValues(requestBody);
         }
+
+        public static HttpRequestMessage SyncRecordValues(string guid, string table) => SyncRecordValues(new Pointer(guid, table));
 
         public static HttpRequestMessage SaveTransactions(SaveTransactions requestBody)
         {
@@ -90,5 +72,28 @@ namespace CSharpNotion
             Utils.SetHttpContent(ref request, requestBody);
             return request;
         }
+
+        public static HttpRequestMessage QueryCollection(QueryCollection requestBody)
+        {
+            HttpRequestMessage request = new(HttpMethod.Post, Constants.ApiUrl + "/queryCollection");
+            Utils.SetHttpContent(ref request, requestBody);
+            return request;
+        }
+
+        public static HttpRequestMessage QueryCollection(string collectionId, string collectionViewId, int limit) => QueryCollection(new QueryCollection()
+        {
+            Collection = new IdPointer(collectionId),
+            CollectionView = new IdPointer(collectionViewId),
+            Loader = new QueryCollectionLoader()
+            {
+                Reducers = new LoaderReducer()
+                {
+                    CollectionGroupResults = new CollectionGroupResultsReducer()
+                    {
+                        Limit = limit
+                    }
+                }
+            }
+        });
     }
 }

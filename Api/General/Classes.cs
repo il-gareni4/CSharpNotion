@@ -12,7 +12,7 @@ namespace CSharpNotion.Api.General
         { Id = id; Table = table; }
     }
 
-    internal class BlockFormat
+    public sealed class BlockFormat
     {
         [JsonPropertyName("copied_from_pointer")]
         public Pointer? CopiedFromPointer { get; set; }
@@ -87,19 +87,26 @@ namespace CSharpNotion.Api.General
         public string? Id { get; set; }
         public int Version { get; set; }
         public JsonElement[][]? Name { get; set; }
-        internal Dictionary<string, CollectionValueSchemaElement>? Schema { get; set; }
+        public Dictionary<string, CollectionValueSchemaElement>? Schema { get; set; }
+
+        [JsonPropertyName("parent_id")]
         public string? ParentId { get; set; }
+
+        [JsonPropertyName("parent_table")]
         public string? ParentTable { get; set; }
+
         public bool Alive { get; set; }
         public bool Migrated { get; set; }
+
+        [JsonPropertyName("space_id")]
         public string? SpaceId { get; set; }
     }
 
-    internal class CollectionValueSchemaElement
+    public class CollectionValueSchemaElement
     {
         public string? Name { get; set; }
         public string? Type { get; set; }
-        public CollectionSelectOption[]? Options { get; set; }
+        internal CollectionSelectOption[]? Options { get; set; }
 
         [JsonPropertyName("number_format")]
         public string? NumberFormat { get; set; }
@@ -146,7 +153,6 @@ namespace CSharpNotion.Api.General
         public string? Id { get; set; }
         public int Version { get; set; }
         public string? Type { get; set; }
-        internal RecordMapBlockProperties? Properties { get; set; }
         public string[]? Content { get; set; }
         public RecordMapBlockPermission[]? Permissions { get; set; }
 
@@ -179,7 +185,7 @@ namespace CSharpNotion.Api.General
         [JsonPropertyName("space_id")]
         public string? SpaceId { get; set; }
 
-        internal BlockFormat? Format { get; set; }
+        public BlockFormat? Format { get; set; }
         public string[]? Discussions { get; set; }
 
         [JsonPropertyName("file_ids")]
@@ -190,6 +196,8 @@ namespace CSharpNotion.Api.General
 
         [JsonPropertyName("collection_id")]
         public string? CollectionId { get; set; }
+
+        public Dictionary<string, JsonElement[][]>? Properties { get; set; }
     }
 
     public class RecordMapBlockPermission
@@ -199,14 +207,5 @@ namespace CSharpNotion.Api.General
 
         [JsonPropertyName("user_id")]
         public string? UserId { get; set; }
-    }
-
-    internal class RecordMapBlockProperties
-    {
-        public JsonElement[][]? Title { get; set; }
-        public string[][]? Checked { get; set; }
-        public JsonElement[][]? Caption { get; set; }
-        public string[][]? Language { get; set; }
-        public string[][]? Source { get; set; }
     }
 }

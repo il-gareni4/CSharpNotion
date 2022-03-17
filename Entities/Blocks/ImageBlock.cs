@@ -4,7 +4,7 @@ namespace CSharpNotion.Entities
 {
     public class ImageBlock : FileContainingBlock<ImageBlock>
     {
-        public ImageBlock(Client client, RecordMapBlockValue blockValue) : base(client, blockValue)
+        internal ImageBlock(Client client, RecordMapBlockValue blockValue) : base(client, blockValue)
         { }
 
         public override ImageBlock SetFileUrl(string source)

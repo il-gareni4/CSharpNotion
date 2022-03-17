@@ -5,7 +5,7 @@ namespace CSharpNotion.Entities
 {
     public class NumberedListBlock : ColorTitleContentBlock<NumberedListBlock>
     {
-        public NumberedListBlock(Client client, RecordMapBlockValue blockValue) : base(client, blockValue)
+        internal NumberedListBlock(Client client, RecordMapBlockValue blockValue) : base(client, blockValue)
         { }
 
         public override NumberedListBlock SetTitle(string title)

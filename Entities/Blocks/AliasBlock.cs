@@ -4,9 +4,9 @@ namespace CSharpNotion.Entities
 {
     public class AliasBlock : BaseBlock
     {
-        public Api.General.Pointer? AliasPointer { get; protected set; }
+        public Pointer? AliasPointer { get; protected set; }
 
-        public AliasBlock(Client client, RecordMapBlockValue blockValue) : base(client, blockValue)
+        internal AliasBlock(Client client, RecordMapBlockValue blockValue) : base(client, blockValue)
         {
             AliasPointer = blockValue?.Format?.AliasPointer;
         }

@@ -7,7 +7,7 @@ namespace CSharpNotion.Entities
     {
         public BlockColor Color { get; set; }
 
-        public TableOfContentsBlock(Client client, RecordMapBlockValue blockValue) : base(client, blockValue)
+        internal TableOfContentsBlock(Client client, RecordMapBlockValue blockValue) : base(client, blockValue)
         {
             Color = BlockColorExtensions.ToBlockColor(blockValue?.Format?.BlockColor);
         }

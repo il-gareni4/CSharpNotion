@@ -11,10 +11,10 @@ namespace CSharpNotion.Entities
         public string? DisplaySource { get; protected set; }
         public string[]? FileIds { get; protected set; }
 
-        public FileContainingBlock(Client client, RecordMapBlockValue blockValue) : base(client, blockValue)
+        internal FileContainingBlock(Client client, RecordMapBlockValue blockValue) : base(client, blockValue)
         {
-            Caption = blockValue?.Properties?.Caption?.ElementAt(0)[0].GetString() ?? "";
-            Source = blockValue?.Properties?.Source?.ElementAt(0)[0];
+            Caption = blockValue?.Properties?.GetValueOrDefault("caption")?.ElementAt(0)[0].GetString() ?? "";
+            Source = blockValue?.Properties?.GetValueOrDefault("source")?.ElementAt(0)[0].GetString();
             DisplaySource = blockValue?.Format?.DisplaySource;
             FileIds = blockValue?.FileIds;
         }

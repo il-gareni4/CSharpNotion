@@ -7,9 +7,9 @@ namespace CSharpNotion.Entities
     {
         public bool Checked { get; private set; }
 
-        public TodoBlock(Client client, RecordMapBlockValue blockValue) : base(client, blockValue)
+        internal TodoBlock(Client client, RecordMapBlockValue blockValue) : base(client, blockValue)
         {
-            string? checkedValue = blockValue?.Properties?.Checked?.ElementAt(0)[0];
+            string? checkedValue = blockValue?.Properties?.GetValueOrDefault("checked")?.ElementAt(0)[0].GetString();
             Checked = checkedValue == "Yes";
         }
 

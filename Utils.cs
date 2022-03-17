@@ -1,6 +1,7 @@
 ﻿using CSharpNotion.Api.General;
 using CSharpNotion.Entities;
 using System.Net.Http.Headers;
+using System.Reflection;
 using System.Text.Json;
 
 namespace CSharpNotion
@@ -24,10 +25,13 @@ namespace CSharpNotion
         {
             if (blockValue.Type is null) throw new ArgumentNullException("blockValue.Type can't be null");
             Type blockType = Constants.TypeToBlock.GetValueOrDefault(blockValue.Type, typeof(DividerBlock));
-            return (BaseBlock)Activator.CreateInstance(blockType, client, blockValue)!;
+            return (BaseBlock)Activator.CreateInstance(blockType, 
+                BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance,
+                null, new object[] { client, blockValue }, null)!;
         }
 
-        public static string RecieveTitle(RecordMapBlockValue blockValue) => blockValue?.Properties?.Title?.ElementAt(0)[0].GetString() ?? "";
+        public static string RecieveTitle(RecordMapBlockValue blockValue) =>
+            blockValue?.Properties?.GetValueOrDefault("title")?.ElementAt(0)[0].GetString() ?? "";
 
         public static RecordMapBlockValue CreateNewBlockValue<T>(string spaceId, string parentId) where T : BaseBlock
         {

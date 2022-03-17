@@ -4,7 +4,7 @@ namespace CSharpNotion.Entities
 {
     public class EquationBlock : TitleContainingBlock<EquationBlock>
     {
-        public EquationBlock(Client client, RecordMapBlockValue blockValue) : base(client, blockValue)
+        internal EquationBlock(Client client, RecordMapBlockValue blockValue) : base(client, blockValue)
         {
         }
 

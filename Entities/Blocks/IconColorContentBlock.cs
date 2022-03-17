@@ -8,7 +8,7 @@ namespace CSharpNotion.Entities
         public string? Icon { get; protected set; }
         public BlockColor Color { get; set; }
 
-        public IconColorContentBlock(Client client, RecordMapBlockValue blockValue) : base(client, blockValue)
+        internal IconColorContentBlock(Client client, RecordMapBlockValue blockValue) : base(client, blockValue)
         {
             Icon = blockValue?.Format?.PageIcon ?? null;
             Color = BlockColorExtensions.ToBlockColor(blockValue?.Format?.BlockColor);

@@ -5,7 +5,7 @@ namespace CSharpNotion.Entities
 {
     public class CalloutBlock : IconColorContentBlock<CalloutBlock>
     {
-        public CalloutBlock(Client client, RecordMapBlockValue blockValue) : base(client, blockValue)
+        internal CalloutBlock(Client client, RecordMapBlockValue blockValue) : base(client, blockValue)
         { }
 
         public override CalloutBlock SetTitle(string title)

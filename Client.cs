@@ -1,6 +1,7 @@
 ﻿using CSharpNotion.Api.Request;
 using CSharpNotion.Api.Response;
 using System.Net;
+using System.Reflection;
 using System.Text.Json;
 
 namespace CSharpNotion
@@ -46,10 +47,12 @@ namespace CSharpNotion
         public async Task<T> GetBlockAsync<T>(string pageId) where T : Entities.BaseBlock
         {
             pageId = Utils.ExtractId(pageId);
-            SyncRecordValuesResponse recordValues = await QuickRequestSetup.SyncRecordValues(pageId, "block").Send(HttpClient).DeserializeJson<SyncRecordValuesResponse>();
+            RecordMapResopnse recordValues = await QuickRequestSetup.SyncRecordValues(pageId, "block").Send(HttpClient).DeserializeJson<RecordMapResopnse>();
             if (recordValues?.RecordMap?.Block is null || recordValues.RecordMap.Block.Count == 0) throw new InvalidDataException("Invalid response");
             if (Constants.BlockToType.GetValueOrDefault(typeof(T)) != recordValues.RecordMap.Block.First().Value.Value!.Type) throw new InvalidDataException("Invalid type of block excepted");
-            return (T)Activator.CreateInstance(typeof(T), this, recordValues.RecordMap.Block.First().Value.Value)!; ;
+            return (T)Activator.CreateInstance(
+                typeof(T), BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance,
+                null, new object[] { this, recordValues.RecordMap.Block.First().Value.Value! }, null)!; ;
         }
 
         /// <summary>
@@ -64,7 +67,7 @@ namespace CSharpNotion
         public async Task<Entities.BaseBlock> GetBlockAsync(string pageId)
         {
             pageId = Utils.ExtractId(pageId);
-            SyncRecordValuesResponse recordValues = await QuickRequestSetup.SyncRecordValues(pageId, "block").Send(HttpClient).DeserializeJson<SyncRecordValuesResponse>();
+            RecordMapResopnse recordValues = await QuickRequestSetup.SyncRecordValues(pageId, "block").Send(HttpClient).DeserializeJson<RecordMapResopnse>();
             if (recordValues?.RecordMap?.Block is null || recordValues.RecordMap.Block.Count == 0) throw new InvalidDataException("Invalid response");
             return Utils.ConvertBlockFromResponse(this, recordValues.RecordMap.Block.First().Value.Value!);
         }

@@ -8,7 +8,7 @@ namespace CSharpNotion.Entities
         public string? Cover { get; set; }
         public float? CoverPosition { get; set; }
 
-        public PageBlock(Client client, RecordMapBlockValue blockValue) : base(client, blockValue)
+        internal PageBlock(Client client, RecordMapBlockValue blockValue) : base(client, blockValue)
         {
             Cover = blockValue?.Format?.PageCover;
             CoverPosition = blockValue?.Format?.PageCoverPosition;

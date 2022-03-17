@@ -2,7 +2,7 @@
 
 namespace CSharpNotion.Api.Response
 {
-    internal class SyncRecordValuesResponse
+    internal class RecordMapResopnse
     {
         public RecordMap? RecordMap { get; set; }
     }

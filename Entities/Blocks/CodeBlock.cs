@@ -113,11 +113,13 @@ namespace CSharpNotion.Entities
         public bool WrapCode { get; protected set; }
         public CodeBlockLanguage Language { get; protected set; }
 
-        public CodeBlock(Client client, RecordMapBlockValue blockValue) : base(client, blockValue)
+        internal CodeBlock(Client client, RecordMapBlockValue blockValue) : base(client, blockValue)
         {
-            Caption = blockValue?.Properties?.Caption?.ElementAt(0)[0].GetString() ?? "";
+            Caption = blockValue?.Properties?.GetValueOrDefault("caption")?.ElementAt(0)[0].GetString() ?? "";
             WrapCode = blockValue?.Format?.CodeWrap ?? false;
-            Language = CodeBlockLanguageExtensions.GetLanguageByString(blockValue?.Properties?.Language?.ElementAt(0)[0]) ?? CodeBlockLanguage.JavaScript;
+            Language = CodeBlockLanguageExtensions.GetLanguageByString(
+                blockValue?.Properties?.GetValueOrDefault("language")?.ElementAt(0)[0].GetString()
+            ) ?? CodeBlockLanguage.JavaScript;
         }
 
         public CodeBlock SetCaption(string caption)

@@ -13,7 +13,7 @@ namespace CSharpNotion.Entities
     {
         public FormatQuoteSize QuoteSize { get; private set; }
 
-        public QuoteBlock(Client client, RecordMapBlockValue blockValue) : base(client, blockValue)
+        internal QuoteBlock(Client client, RecordMapBlockValue blockValue) : base(client, blockValue)
         {
             QuoteSize = blockValue?.Format?.QuoteSize switch
             {

@@ -7,7 +7,7 @@ namespace CSharpNotion.Entities
     {
         public bool Toggleable { get; set; }
 
-        public BaseHeaderBlock(Client client, RecordMapBlockValue blockValue) : base(client, blockValue)
+        internal BaseHeaderBlock(Client client, RecordMapBlockValue blockValue) : base(client, blockValue)
         {
             Toggleable = blockValue?.Format?.Toggleable ?? false;
         }

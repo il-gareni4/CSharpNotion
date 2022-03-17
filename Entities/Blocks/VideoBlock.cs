@@ -4,7 +4,7 @@ namespace CSharpNotion.Entities
 {
     public class VideoBlock : FileContainingBlock<VideoBlock>
     {
-        public VideoBlock(Client client, RecordMapBlockValue blockValue) : base(client, blockValue)
+        internal VideoBlock(Client client, RecordMapBlockValue blockValue) : base(client, blockValue)
         { }
 
         public override VideoBlock SetFileUrl(string source)

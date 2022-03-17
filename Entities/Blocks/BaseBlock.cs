@@ -106,10 +106,10 @@ namespace CSharpNotion.Entities
         {
             if (ContentIds.Count != Content.Count)
             {
-                Api.General.Pointer[] pointers = ContentIds.Select((id) => new Api.General.Pointer(id, "block")).ToArray();
-                SyncRecordValuesResponse syncResponse = await QuickRequestSetup.SyncRecordValues(pointers)
+                Pointer[] pointers = ContentIds.Select((id) => new Api.General.Pointer(id, "block")).ToArray();
+                RecordMapResopnse syncResponse = await QuickRequestSetup.SyncRecordValues(pointers)
                     .Send(Client.HttpClient)
-                    .DeserializeJson<SyncRecordValuesResponse>();
+                    .DeserializeJson<RecordMapResopnse>();
                 if (syncResponse?.RecordMap?.Block is null) throw new InvalidDataException("Invalid response");
 
                 Content = syncResponse.RecordMap.Block.Select((pair) => Utils.ConvertBlockFromResponse(Client, pair.Value.Value!)).ToList();

@@ -14,7 +14,7 @@ namespace CSharpNotion.Entities
         protected SyncContainerBlock? SyncContainerBlock { get; set; }
         public RecordMapBlockValue BlockValue { get; }
 
-        public SyncReferenceBlock(Client client, RecordMapBlockValue blockValue) : base(client, blockValue)
+        internal SyncReferenceBlock(Client client, RecordMapBlockValue blockValue) : base(client, blockValue)
         {
             SyncContainerPointer = blockValue?.Format?.TransclusionReferencePointer;
             BlockValue = blockValue!;

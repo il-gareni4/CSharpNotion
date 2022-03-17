@@ -5,7 +5,7 @@ namespace CSharpNotion.Entities
 {
     public class ToggleBlock : ColorTitleContentBlock<ToggleBlock>
     {
-        public ToggleBlock(Client client, RecordMapBlockValue blockValue) : base(client, blockValue)
+        internal ToggleBlock(Client client, RecordMapBlockValue blockValue) : base(client, blockValue)
         { }
 
         public override ToggleBlock SetTitle(string title)

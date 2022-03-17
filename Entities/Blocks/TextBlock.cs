@@ -5,7 +5,7 @@ namespace CSharpNotion.Entities
 {
     public class TextBlock : ColorTitleContentBlock<TextBlock>
     {
-        public TextBlock(Client client, RecordMapBlockValue blockValue) : base(client, blockValue)
+        internal TextBlock(Client client, RecordMapBlockValue blockValue) : base(client, blockValue)
         { }
 
         public override TextBlock SetTitle(string title)
