@@ -79,7 +79,10 @@ namespace CSharpNotion
 
         internal void OperationsToTransaction()
         {
-            if (_operations.Count == 0) return;
+            if (_operations.Count == 0)
+            {
+                return;
+            }
             else
             {
                 _transactions.Add(new Transaction() { Operations = _operations.ToArray() });

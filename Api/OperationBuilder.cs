@@ -1,5 +1,5 @@
-﻿using CSharpNotion.Api.Request;
-using CSharpNotion.Api.Response;
+﻿using CSharpNotion.Api.General;
+using CSharpNotion.Api.Request;
 
 namespace CSharpNotion.Api
 {
@@ -28,7 +28,7 @@ namespace CSharpNotion.Api
                 Args = args,
                 Command = command.ToString(),
                 Path = new string[1] { "content" },
-                Pointer = new General.Pointer(parentId, "block")
+                Pointer = new Pointer(parentId, "block")
             };
         }
 
@@ -40,7 +40,7 @@ namespace CSharpNotion.Api
                 Args = args,
                 Command = "listRemove",
                 Path = new string[1] { "content" },
-                Pointer = new General.Pointer(parentId, "block")
+                Pointer = new Pointer(parentId, "block")
             };
         }
 
@@ -66,7 +66,7 @@ namespace CSharpNotion.Api
         {
             Command = command.ToString(),
             Path = path,
-            Pointer = new General.Pointer(blockId, table),
+            Pointer = new Pointer(blockId, table),
             Args = args
         };
     }

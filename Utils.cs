@@ -1,4 +1,4 @@
-﻿using CSharpNotion.Api.Response;
+﻿using CSharpNotion.Api.General;
 using CSharpNotion.Entities;
 using System.Net.Http.Headers;
 using System.Text.Json;
@@ -27,10 +27,7 @@ namespace CSharpNotion
             return (BaseBlock)Activator.CreateInstance(blockType, client, blockValue)!;
         }
 
-        public static string RecieveTitle(RecordMapBlockValue blockValue)
-        {
-            return blockValue?.Properties?.Title?.ElementAt(0)[0].GetString() ?? "";
-        }
+        public static string RecieveTitle(RecordMapBlockValue blockValue) => blockValue?.Properties?.Title?.ElementAt(0)[0].GetString() ?? "";
 
         public static RecordMapBlockValue CreateNewBlockValue<T>(string spaceId, string parentId) where T : BaseBlock
         {

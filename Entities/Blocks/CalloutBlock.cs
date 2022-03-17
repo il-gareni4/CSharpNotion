@@ -1,4 +1,4 @@
-﻿using CSharpNotion.Api.Response;
+﻿using CSharpNotion.Api.General;
 using CSharpNotion.Entities.Interfaces;
 
 namespace CSharpNotion.Entities

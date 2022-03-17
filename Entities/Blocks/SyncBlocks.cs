@@ -1,4 +1,4 @@
-﻿using CSharpNotion.Api.Response;
+﻿using CSharpNotion.Api.General;
 
 namespace CSharpNotion.Entities
 {
@@ -31,8 +31,11 @@ namespace CSharpNotion.Entities
 
         private void CheckSyncContainerFetched()
         {
-            if (SyncContainerBlock is null) throw new InvalidOperationException("You need to fetch a SyncContainerBlock" +
+            if (SyncContainerBlock is null)
+            {
+                throw new InvalidOperationException("You need to fetch a SyncContainerBlock" +
                 " before using ContentBlock (base class) methods. You can do it by calling method FetchSyncContainerBlock()");
+            }
         }
 
         public override async Task<List<BaseBlock>> GetContent()
