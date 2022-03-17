@@ -60,5 +60,8 @@ namespace CSharpNotion.Api.General
 
         [JsonPropertyName("transclusion_reference_pointer")]
         public Pointer? TransclusionReferencePointer { get; set; }
+
+        [JsonPropertyName("collection_pointer")]
+        public Pointer? CollectionPointer { get; set; }
     }
 }

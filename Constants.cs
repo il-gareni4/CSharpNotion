@@ -28,7 +28,8 @@
             { typeof(Entities.ImageBlock), "image" },
             { typeof(Entities.VideoBlock), "video" },
             { typeof(Entities.FileBlock), "file" },
-            { typeof(Entities.TableOfContentsBlock), "table_of_contents" }
+            { typeof(Entities.TableOfContentsBlock), "table_of_contents" },
+            { typeof(Entities.CollectionViewPageBlock), "collection_view_page" }
         };
 
         public static readonly Dictionary<string, Type> TypeToBlock =

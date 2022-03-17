@@ -1,4 +1,4 @@
-﻿namespace CSharpNotion.Entities
+﻿namespace CSharpNotion.Entities.Interfaces
 {
     public interface ICaptionBlock<T> where T : BaseBlock
     {

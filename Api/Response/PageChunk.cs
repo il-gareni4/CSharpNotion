@@ -75,6 +75,12 @@ namespace CSharpNotion.Api.Response
 
         [JsonPropertyName("file_ids")]
         public string[]? FileIds { get; set; }
+
+        [JsonPropertyName("view_ids")]
+        public string[]? ViewIds { get; set; }
+
+        [JsonPropertyName("collection_id")]
+        public string? CollectionId { get; set; }
     }
 
     public class RecordMapBlockPermission
