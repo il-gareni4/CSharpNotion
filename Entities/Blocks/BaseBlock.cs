@@ -58,7 +58,7 @@ namespace CSharpNotion.Entities
         {
             Client.OperationsToTransaction();
             RecordMapBlockValue newBlock = Utils.CreateNewBlockValue<T>(SpaceId, ParentId);
-            T newBlockInstance = (T)Activator.CreateInstance(typeof(T), Client, newBlock)!;
+            T newBlockInstance = Utils.ActivatorCreateNewBlock<T>(Client, newBlock);
             Client.AddOperation(Api.OperationBuilder.FromBlockValueToSetOperation(newBlock));
             Client.AddOperation(Api.OperationBuilder.ListInsertingOperation(whereInsert, ParentId, newBlock.Id!, Id));
             return newBlockInstance;
@@ -126,7 +126,7 @@ namespace CSharpNotion.Entities
         public virtual T AppendBlock<T>() where T : BaseBlock
         {
             RecordMapBlockValue newBlock = Utils.CreateNewBlockValue<T>(SpaceId, Id);
-            T newBlockInstance = (T)Activator.CreateInstance(typeof(T), Client, newBlock)!;
+            T newBlockInstance = Utils.ActivatorCreateNewBlock<T>(Client, newBlock);
             Client.OperationsToTransaction();
             Client.AddOperation(Api.OperationBuilder.FromBlockValueToSetOperation(newBlock));
             Client.AddOperation(
@@ -174,7 +174,7 @@ namespace CSharpNotion.Entities
 
             string? blockId = ContentIds.Count == 0 ? null : ContentIds[index];
             RecordMapBlockValue newBlock = Utils.CreateNewBlockValue<T>(SpaceId, Id);
-            T newBlockInstance = (T)Activator.CreateInstance(typeof(T), Client, newBlock)!;
+            T newBlockInstance = Utils.ActivatorCreateNewBlock<T>(Client, newBlock);
             Client.OperationsToTransaction();
             Client.AddOperation(Api.OperationBuilder.FromBlockValueToSetOperation(newBlock));
             Client.AddOperation(

@@ -25,7 +25,7 @@ namespace CSharpNotion
         {
             if (blockValue.Type is null) throw new ArgumentNullException("blockValue.Type can't be null");
             Type blockType = Constants.TypeToBlock.GetValueOrDefault(blockValue.Type, typeof(DividerBlock));
-            return (BaseBlock)Activator.CreateInstance(blockType, 
+            return (BaseBlock)Activator.CreateInstance(blockType,
                 BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance,
                 null, new object[] { client, blockValue }, null)!;
         }
@@ -48,6 +48,13 @@ namespace CSharpNotion
                 CreatedTime = createdTime,
                 LastEditedTime = createdTime
             };
+        }
+
+        public static T ActivatorCreateNewBlock<T>(Client client, RecordMapBlockValue blockValue)
+        {
+            return (T)Activator.CreateInstance(
+                typeof(T), BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance,
+                null, new object[] { client, blockValue }, null)!;
         }
     }
 }
