@@ -29,14 +29,15 @@ namespace CSharpNotion.Entities
             return Collection;
         }
 
-        public async Task<PageBlock[]> GetPages(int count)
+        public async Task<CollectionRowBlock[]> GetPages(int count)
         {
             RecordMap recordMap = (await QuickRequestSetup.QueryCollection(CollectionId, ViewIds[0], count)
                 .Send(Client.HttpClient).DeserializeJson<RecordMapResopnse>()).RecordMap!;
-            if (recordMap.Block is null) throw new ArgumentNullException();
-            List<PageBlock> blocks = new List<PageBlock>();
+            if (recordMap.Block is null) throw new InvalidOperationException();
+            await GetCollection();
+            List<CollectionRowBlock> blocks = new();
             foreach (RecordMapBlock recordMapBlock in recordMap.Block.Values)
-                blocks.Add(new PageBlock(Client, recordMapBlock.Value!));
+                blocks.Add(new CollectionRowBlock(Client, recordMapBlock.Value!, Collection!));
             return blocks.ToArray();
         }
     }

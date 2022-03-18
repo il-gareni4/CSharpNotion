@@ -1,11 +1,13 @@
-﻿namespace CSharpNotion
+﻿using CSharpNotion.Entities.CollectionProperties;
+
+namespace CSharpNotion
 {
     public class Constants
     {
         public const string BaseUrl = "https://www.notion.so";
         public const string ApiUrl = BaseUrl + "/api/v3";
 
-        public static readonly Dictionary<Type, string> BlockToType = new()
+        public static readonly Dictionary<Type, string> BlockTypeToTypeName = new()
         {
             { typeof(Entities.PageBlock), "page" },
             { typeof(Entities.TextBlock), "text" },
@@ -32,7 +34,12 @@
             { typeof(Entities.CollectionViewPageBlock), "collection_view_page" }
         };
 
-        public static readonly Dictionary<string, Type> TypeToBlock =
-            new(BlockToType.Select((pair) => new KeyValuePair<string, Type>(pair.Value, pair.Key)));
+        public static readonly Dictionary<string, Type> TypeNameToBlockType =
+            new(BlockTypeToTypeName.Select((pair) => new KeyValuePair<string, Type>(pair.Value, pair.Key)));
+
+        public static readonly Dictionary<string, Type> TypeNameToPropertyType = new()
+        {
+            { "text", typeof(TextProperty) }
+        };
     }
 }

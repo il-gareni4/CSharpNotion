@@ -1,4 +1,5 @@
 ﻿using CSharpNotion.Api.General;
+using CSharpNotion.Entities.CollectionProperties;
 
 namespace CSharpNotion.Entities
 {
@@ -10,7 +11,7 @@ namespace CSharpNotion.Entities
         public string Name { get; protected set; }
         public string ParentId { get; protected set; }
         public string ParentTable { get; protected set; }
-        public Dictionary<string, CollectionValueSchemaElement> Schema { get; protected set; }
+        public List<BaseProperty> Properties { get; protected set; }
         public bool Alive { get; protected set; }
         public bool Migrated { get; protected set; }
         public string SpaceId { get; protected set; }
@@ -23,11 +24,16 @@ namespace CSharpNotion.Entities
             ParentTable = collectionValue.ParentTable ?? throw new ArgumentNullException();
             SpaceId = collectionValue.SpaceId ?? throw new ArgumentNullException();
             Name = collectionValue.Name?.ElementAt(0)[0].GetString() ?? string.Empty;
-            Schema = collectionValue.Schema ?? new Dictionary<string, CollectionValueSchemaElement>();
+            Properties = Utils.ConvertSchemaToPropertiesList(client, collectionValue.Schema!);
 
             Alive = collectionValue.Alive;
             Version = collectionValue.Version;
             Migrated = collectionValue.Migrated;
+        }
+
+        internal BaseProperty? GetPropertyByName(string name)
+        {
+            return Properties.FirstOrDefault(prop => prop.Name == name);
         }
     }
 }

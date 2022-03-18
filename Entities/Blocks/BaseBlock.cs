@@ -51,11 +51,16 @@ namespace CSharpNotion.Entities
         /// Creates a new operation that
         /// inserts a new <typeparamref name="T"/> before or after the current block
         /// </summary>
+        /// <remarks>
+        /// This methods works only if <see cref="ParentTable"/><c> == 'block'</c>
+        /// </remarks>
         /// <typeparam name="T">New block type</typeparam>
         /// <param name="whereInsert">Specifies where to insert the new block</param>
         /// <returns>New <typeparamref name="T"/></returns>
+        /// <exception cref="InvalidOperationException"><see cref="ParentTable"/> is not 'block'</exception>
         public virtual T InsertBlockAround<T>(Api.ListCommand whereInsert) where T : BaseBlock
         {
+            if (ParentTable != "block") throw new InvalidOperationException("ParentTable is not 'block'");
             Client.OperationsToTransaction();
             RecordMapBlockValue newBlock = Utils.CreateNewBlockValue<T>(SpaceId, ParentId);
             T newBlockInstance = Utils.ActivatorCreateNewBlock<T>(Client, newBlock);

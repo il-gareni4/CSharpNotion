@@ -1,5 +1,6 @@
 ﻿using CSharpNotion.Api.General;
 using CSharpNotion.Entities.Interfaces;
+using System.Text.Json;
 
 namespace CSharpNotion.Entities
 {
@@ -7,11 +8,13 @@ namespace CSharpNotion.Entities
     {
         public string? Cover { get; set; }
         public float? CoverPosition { get; set; }
+        internal Dictionary<string, JsonElement[][]> Properties { get; set; }
 
         internal PageBlock(Client client, RecordMapBlockValue blockValue) : base(client, blockValue)
         {
-            Cover = blockValue?.Format?.PageCover;
-            CoverPosition = blockValue?.Format?.PageCoverPosition;
+            Cover = blockValue.Format?.PageCover;
+            CoverPosition = blockValue.Format?.PageCoverPosition;
+            Properties = blockValue.Properties ?? new Dictionary<string, JsonElement[][]>();
         }
 
         public PageBlock SetCover(string? cover)

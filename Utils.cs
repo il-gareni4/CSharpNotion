@@ -1,5 +1,6 @@
 ﻿using CSharpNotion.Api.General;
 using CSharpNotion.Entities;
+using CSharpNotion.Entities.CollectionProperties;
 using System.Net.Http.Headers;
 using System.Reflection;
 using System.Text.Json;
@@ -24,7 +25,7 @@ namespace CSharpNotion
         public static BaseBlock ConvertBlockFromResponse(Client client, RecordMapBlockValue blockValue)
         {
             if (blockValue.Type is null) throw new ArgumentNullException("blockValue.Type can't be null");
-            Type blockType = Constants.TypeToBlock.GetValueOrDefault(blockValue.Type, typeof(DividerBlock));
+            Type blockType = Constants.TypeNameToBlockType.GetValueOrDefault(blockValue.Type, typeof(DividerBlock));
             return (BaseBlock)Activator.CreateInstance(blockType,
                 BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance,
                 null, new object[] { client, blockValue }, null)!;
@@ -40,7 +41,7 @@ namespace CSharpNotion
             {
                 Id = Guid.NewGuid().ToString(),
                 SpaceId = spaceId,
-                Type = Constants.BlockToType.GetValueOrDefault(typeof(T), "text"),
+                Type = Constants.BlockTypeToTypeName.GetValueOrDefault(typeof(T), "text"),
                 Version = 1,
                 Alive = true,
                 ParentId = parentId,
@@ -55,6 +56,19 @@ namespace CSharpNotion
             return (T)Activator.CreateInstance(
                 typeof(T), BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance,
                 null, new object[] { client, blockValue }, null)!;
+        }
+
+        public static List<BaseProperty> ConvertSchemaToPropertiesList(Client client, Dictionary<string, CollectionValueSchemaElement> schema)
+        {
+            List<BaseProperty> list = new();
+            foreach(KeyValuePair<string, CollectionValueSchemaElement> property in schema)
+            {
+                Type propertyType = Constants.TypeNameToPropertyType.GetValueOrDefault(property.Value.Type!, typeof(TextProperty));
+                list.Add((BaseProperty)Activator.CreateInstance(propertyType,
+                    BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance,
+                    null, new object[] { client, property }, null)!);
+            }
+            return list;
         }
     }
 }

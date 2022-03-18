@@ -208,4 +208,33 @@ namespace CSharpNotion.Api.General
         [JsonPropertyName("user_id")]
         public string? UserId { get; set; }
     }
+
+    public class BlockDateInformation
+    {
+        public string? Type { get; set; }
+
+        [JsonPropertyName("end_date")]
+        public string? EndDate { get; set; }
+
+        [JsonPropertyName("end_time")]
+        public string? EndTime { get; set; }
+
+        public BlockDateInformationReminder? Reminder { get; set; }
+
+        [JsonPropertyName("time_zone")]
+        public string? TimeZone { get; set; }
+
+        [JsonPropertyName("start_date")]
+        public string? StartDate { get; set; }
+
+        [JsonPropertyName("start_time")]
+        public string? StartTime { get; set; }
+    }
+
+    public class BlockDateInformationReminder
+    {
+        public string? Time { get; set; }
+        public string? Unit { get; set; }
+        public int Value { get; set; }
+    }
 }

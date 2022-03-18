@@ -1,7 +1,6 @@
 ﻿using CSharpNotion.Api.Request;
 using CSharpNotion.Api.Response;
 using System.Net;
-using System.Reflection;
 using System.Text.Json;
 
 namespace CSharpNotion
@@ -49,7 +48,7 @@ namespace CSharpNotion
             pageId = Utils.ExtractId(pageId);
             RecordMapResopnse recordValues = await QuickRequestSetup.SyncRecordValues(pageId, "block").Send(HttpClient).DeserializeJson<RecordMapResopnse>();
             if (recordValues?.RecordMap?.Block is null || recordValues.RecordMap.Block.Count == 0) throw new InvalidDataException("Invalid response");
-            if (Constants.BlockToType.GetValueOrDefault(typeof(T)) != recordValues.RecordMap.Block.First().Value.Value!.Type) throw new InvalidDataException("Invalid type of block excepted");
+            if (Constants.BlockTypeToTypeName.GetValueOrDefault(typeof(T)) != recordValues.RecordMap.Block.First().Value.Value!.Type) throw new InvalidDataException("Invalid type of block excepted");
             return Utils.ActivatorCreateNewBlock<T>(this, recordValues.RecordMap.Block.First().Value.Value!);
         }
 
