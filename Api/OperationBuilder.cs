@@ -32,6 +32,17 @@ namespace CSharpNotion.Api
             };
         }
 
+        public static Operation KeyedObjectListAfter(string parentId, string parentTable, string[] path, Dictionary<string, object?> args)
+        {
+            return new Operation()
+            {
+                Args = new Dictionary<string, object?>() { { "value", args } },
+                Command = "keyedObjectListAfter",
+                Path = path,
+                Pointer = new Pointer(parentId, parentTable)
+            };
+        }
+
         public static Operation ListRemovingOperation(string parentId, string childId)
         {
             Dictionary<string, object?> args = new() { { "id", childId } };

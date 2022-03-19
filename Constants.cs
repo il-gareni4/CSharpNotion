@@ -39,7 +39,18 @@ namespace CSharpNotion
 
         public static readonly Dictionary<string, Type> TypeNameToPropertyType = new()
         {
-            { "text", typeof(TextProperty) }
+            { "text", typeof(TextProperty) },
+            { "number", typeof(NumberProperty) },
+            { "url", typeof(UrlProperty) },
+            { "email", typeof(EmailProperty) },
+            { "phone_number", typeof(PhoneNumberProperty) },
+            { "checkbox", typeof(CheckboxProperty) },
+            { "select", typeof(SelectProperty) },
+            { "multi_select", typeof(MultiselectProperty) },
+            { "person", typeof(PersonProperty) },
+            { "relation", typeof(RelationProperty) },
+            { "file", typeof(FileProperty) },
+            { "date", typeof(DateProperty) }
         };
     }
 }

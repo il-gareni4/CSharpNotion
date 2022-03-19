@@ -1,4 +1,6 @@
-﻿namespace CSharpNotion.Entities
+﻿using CSharpNotion.Api.General;
+
+namespace CSharpNotion.Entities
 {
     public class DatePropertyValue
     {
@@ -41,6 +43,20 @@
             else s += ", no reminder";
             return s;
         }
+
+        internal BlockDateInformation ToBlockDateInformation()
+        {
+            return new BlockDateInformation()
+            {
+                StartDate = Utils.FormatToNotionDate(StartDate),
+                StartTime = HaveTime ? Utils.FormatToNotionTime(StartDate) : null,
+                EndDate = EndDate is not null ? Utils.FormatToNotionDate(EndDate.Value) : null,
+                EndTime = EndDate is not null && HaveTime ? Utils.FormatToNotionTime(EndDate.Value) : null,
+                Reminder = Reminder is not null ? Reminder.ToBlockDateInformationReminder() : null,
+                TimeZone = TimeZone,
+                Type = HaveTime ? (EndDate is not null ? "datetimerange" : "datetime") : (EndDate is not null ? "daterange" : "date")
+            };
+        }
     }
 
     public class DatePropertyValueReminder
@@ -54,6 +70,16 @@
             Unit = unit;
             Value = value;
             Time = time;
+        }
+
+        internal BlockDateInformationReminder ToBlockDateInformationReminder()
+        {
+            return new BlockDateInformationReminder()
+            {
+                Time = Time is not null ? Utils.FormatToNotionTime(Time.Value) : null,
+                Value = Value,
+                Unit = Unit
+            };
         }
     }
 }

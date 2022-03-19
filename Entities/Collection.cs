@@ -24,11 +24,12 @@ namespace CSharpNotion.Entities
             ParentTable = collectionValue.ParentTable ?? throw new ArgumentNullException();
             SpaceId = collectionValue.SpaceId ?? throw new ArgumentNullException();
             Name = collectionValue.Name?.ElementAt(0)[0].GetString() ?? string.Empty;
-            Properties = Utils.ConvertSchemaToPropertiesList(client, collectionValue.Schema!);
 
             Alive = collectionValue.Alive;
             Version = collectionValue.Version;
             Migrated = collectionValue.Migrated;
+
+            Properties = Utils.ConvertSchemaToPropertiesList(client, collectionValue.Schema!, this);
         }
 
         internal BaseProperty? GetPropertyByName(string name)

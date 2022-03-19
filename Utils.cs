@@ -9,6 +9,8 @@ namespace CSharpNotion
 {
     internal static class Utils
     {
+        private static Random _random = new();
+
         public static string ExtractId(string id)
         {
             if (!id.Contains('-'))
@@ -58,17 +60,49 @@ namespace CSharpNotion
                 null, new object[] { client, blockValue }, null)!;
         }
 
-        public static List<BaseProperty> ConvertSchemaToPropertiesList(Client client, Dictionary<string, CollectionValueSchemaElement> schema)
+        public static List<BaseProperty> ConvertSchemaToPropertiesList(Client client, Dictionary<string, CollectionValueSchemaElement> schema, Collection collection)
         {
             List<BaseProperty> list = new();
-            foreach(KeyValuePair<string, CollectionValueSchemaElement> property in schema)
+            foreach (KeyValuePair<string, CollectionValueSchemaElement> property in schema)
             {
                 Type propertyType = Constants.TypeNameToPropertyType.GetValueOrDefault(property.Value.Type!, typeof(TextProperty));
                 list.Add((BaseProperty)Activator.CreateInstance(propertyType,
                     BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance,
-                    null, new object[] { client, property }, null)!);
+                    null, new object[] { client, property, collection }, null)!);
             }
             return list;
         }
+
+        public static T RandomEnumValue<T>()
+        {
+            var v = Enum.GetValues(typeof(T));
+            return (T)v.GetValue(_random.Next(v.Length))!;
+        }
+
+        public static string FormatToNotionTime(int hour, int minute)
+        {
+            static string formatUnit(int val)
+            {
+                if (val > 9) return val.ToString();
+                else return "0" + val.ToString();
+            }
+            return $"{formatUnit(hour)}:{formatUnit(minute)}";
+        }
+
+        public static string FormatToNotionTime(TimeOnly time) => FormatToNotionTime(time.Hour, time.Minute);
+
+        public static string FormatToNotionTime(DateTime dateTime) => FormatToNotionTime(dateTime.Hour, dateTime.Minute);
+
+        public static string FormatToNotionDate(int year, int month, int day)
+        {
+            static string formatUnit(int val)
+            {
+                if (val > 9) return val.ToString();
+                else return "0" + val.ToString();
+            }
+            return $"{year}-{formatUnit(month)}-{formatUnit(day)}";
+        }
+
+        public static string FormatToNotionDate(DateTime dateTime) => FormatToNotionDate(dateTime.Year, dateTime.Month, dateTime.Day);
     }
 }
