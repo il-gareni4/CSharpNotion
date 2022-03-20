@@ -1,5 +1,7 @@
-﻿using CSharpNotion.Api.Request;
+﻿using CSharpNotion.Api.General;
+using CSharpNotion.Api.Request;
 using CSharpNotion.Api.Response;
+using CSharpNotion.Entities;
 using System.Net;
 using System.Text.Json;
 
@@ -14,6 +16,18 @@ namespace CSharpNotion
         private readonly List<Transaction> _transactions = new();
         private readonly List<Operation> _operations = new();
         private readonly List<Action> _actions = new();
+        private bool _settedUp = false;
+        private User? _user;
+
+        public User User
+        {
+            get
+            {
+                CheckSetupState();
+                return _user!;
+            }
+            set => _user = value;
+        }
 
         public static readonly JsonSerializerOptions SerializeOptions = new()
         {
@@ -33,6 +47,22 @@ namespace CSharpNotion
             HttpClient = new HttpClient(httpClientHandler);
         }
 
+        public async Task<Client> Setup()
+        {
+            if (_settedUp) return this;
+
+            RecordMap recordMap = (await QuickRequestSetup.GetSpaces().Send(HttpClient).DeserializeJson<Dictionary<string, RecordMap>>()).First().Value;
+            User = new User(recordMap.UserSettings!.First().Value.Value!);
+
+            _settedUp = true;
+            return this;
+        }
+
+        private void CheckSetupState()
+        {
+            if (!_settedUp) throw new InvalidOperationException("Client is not setted up. Use 'await Client.Setup()' before using this method");
+        }
+
         /// <summary>
         /// Get a block by ID with type T. Type checking included
         /// </summary>
@@ -45,6 +75,7 @@ namespace CSharpNotion
         /// <exception cref="TaskCanceledException"></exception>
         public async Task<T> GetBlockAsync<T>(string pageId) where T : Entities.BaseBlock
         {
+            CheckSetupState();
             pageId = Utils.ExtractId(pageId);
             RecordMapResopnse recordValues = await QuickRequestSetup.SyncRecordValues(pageId, "block").Send(HttpClient).DeserializeJson<RecordMapResopnse>();
             if (recordValues?.RecordMap?.Block is null || recordValues.RecordMap.Block.Count == 0) throw new InvalidDataException("Invalid response");
@@ -61,8 +92,9 @@ namespace CSharpNotion
         /// <exception cref="InvalidOperationException"></exception>
         /// <exception cref="HttpRequestException"></exception>
         /// <exception cref="TaskCanceledException"></exception>
-        public async Task<Entities.BaseBlock> GetBlockAsync(string pageId)
+        public async Task<BaseBlock> GetBlockAsync(string pageId)
         {
+            CheckSetupState();
             pageId = Utils.ExtractId(pageId);
             RecordMapResopnse recordValues = await QuickRequestSetup.SyncRecordValues(pageId, "block").Send(HttpClient).DeserializeJson<RecordMapResopnse>();
             if (recordValues?.RecordMap?.Block is null || recordValues.RecordMap.Block.Count == 0) throw new InvalidDataException("Invalid response");

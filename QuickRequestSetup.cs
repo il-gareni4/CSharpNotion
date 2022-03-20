@@ -95,5 +95,7 @@ namespace CSharpNotion
                 }
             }
         });
+
+        public static HttpRequestMessage GetSpaces() => new(HttpMethod.Post, Constants.ApiUrl + "/getSpaces");
     }
 }

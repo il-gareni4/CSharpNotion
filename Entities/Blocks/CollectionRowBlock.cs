@@ -324,10 +324,6 @@ namespace CSharpNotion.Entities
             return this;
         }
 
-        public override CollectionRowBlock SetTitle(string title)
-        {
-            base.SetTitle(title);
-            return this;
-        }
+        public override CollectionRowBlock SetTitle(string title) => (CollectionRowBlock)base.SetTitle(title);
     }
 }

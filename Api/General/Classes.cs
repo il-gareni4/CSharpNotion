@@ -291,13 +291,13 @@ namespace CSharpNotion.Api.General
         public bool UsedWindowsApp { get; set; }
     }
 
-    internal class CookieConsent
+    public class CookieConsent
     {
         public string? Id { get; set; }
         public CookieConsentPermission? Permission { get; set; }
     }
 
-    internal class CookieConsentPermission
+    public class CookieConsentPermission
     {
         public bool Necessary { get; set; }
         public bool Performance { get; set; }
