@@ -15,14 +15,6 @@ namespace CSharpNotion.Entities
             Properties = blockValue.Properties ?? new Dictionary<string, JsonElement[][]>();
         }
 
-        private JsonElement[][]? GetPropertyValue(string propertyName)
-        {
-            BaseProperty? prop = ParentCollection!.GetPropertyByName(propertyName);
-            if (prop is null) return null;
-
-            return Properties!.GetValueOrDefault(prop.Id);
-        }
-
         private JsonElement[][]? GetPropertyValue<T>(string propertyName) where T : BaseProperty
         {
             BaseProperty? prop = ParentCollection!.GetPropertyByName(propertyName);
@@ -65,17 +57,19 @@ namespace CSharpNotion.Entities
             );
         }
 
-        public string? GetTextProperty(string propertyName)
+        private string? GetTextProperty<T>(string propertyName) where T : BaseProperty
         {
-            JsonElement[][]? propValue = GetPropertyValue<TextProperty>(propertyName);
+            JsonElement[][]? propValue = GetPropertyValue<T>(propertyName);
             if (propValue is null) return null;
 
             return propValue[0][0].GetString();
         }
 
+        public string? GetTextProperty(string propertyName) => GetTextProperty<TextProperty>(propertyName);
+
         public double? GetNumberProperty(string propertyName)
         {
-            JsonElement[][]? propValue = GetPropertyValue(propertyName);
+            JsonElement[][]? propValue = GetPropertyValue<NumberProperty>(propertyName);
             if (propValue is null) return null;
 
             return propValue[0][0].GetDouble();
@@ -83,41 +77,43 @@ namespace CSharpNotion.Entities
 
         public string[]? GetMultiselectProperty(string propertyName)
         {
-            JsonElement[][]? propValue = GetPropertyValue(propertyName);
+            JsonElement[][]? propValue = GetPropertyValue<MultiselectProperty>(propertyName);
             if (propValue is null) return null;
 
             return propValue[0][0].GetString()!.Split(",");
         }
 
-        public string? GetUrlProperty(string propertyName) => GetTextProperty(propertyName);
+        public string? GetUrlProperty(string propertyName) => GetTextProperty<UrlProperty>(propertyName);
 
-        public string? GetSelectProperty(string propertyName) => GetTextProperty(propertyName);
+        public string? GetSelectProperty(string propertyName) => GetTextProperty<SelectProperty>(propertyName);
 
-        public string? GetPhoneNumberProperty(string propertyName) => GetTextProperty(propertyName);
+        public string? GetPhoneNumberProperty(string propertyName) => GetTextProperty<PhoneNumberProperty>(propertyName);
 
-        public string? GetEmailProperty(string propertyName) => GetTextProperty(propertyName);
+        public string? GetEmailProperty(string propertyName) => GetTextProperty<EmailProperty>(propertyName);
 
         public bool? GetCheckboxProperty(string propertyName)
         {
-            JsonElement[][]? propValue = GetPropertyValue(propertyName);
+            JsonElement[][]? propValue = GetPropertyValue<CheckboxProperty>(propertyName);
             if (propValue is null) return null;
 
             return propValue[0][0].GetString() == "Yes";
         }
 
-        public string[]? GetPersonProperty(string propertyName)
+        private string[]? GetLinkIdsProperty<T>(string propertyName) where T : BaseProperty
         {
-            JsonElement[][]? propValue = GetPropertyValue(propertyName);
+            JsonElement[][]? propValue = GetPropertyValue<T>(propertyName);
             if (propValue is null) return null;
 
             return propValue[0][1].Deserialize<string[][]>()![0][1..];
         }
 
-        public string[]? GetRelationProperty(string propertyName) => GetPersonProperty(propertyName);
+        public string[]? GetPersonProperty(string propertyName) => GetLinkIdsProperty<PersonProperty>(propertyName);
+
+        public string[]? GetRelationProperty(string propertyName) => GetLinkIdsProperty<RelationProperty>(propertyName);
 
         public FilePropertyValue[]? GetFileProperty(string propertyName)
         {
-            JsonElement[][]? propValue = GetPropertyValue(propertyName);
+            JsonElement[][]? propValue = GetPropertyValue<FileProperty>(propertyName);
             if (propValue is null) return null;
 
             List<FilePropertyValue> files = new();
@@ -132,7 +128,7 @@ namespace CSharpNotion.Entities
 
         public DatePropertyValue? GetDateProperty(string propertyName)
         {
-            JsonElement[][]? propValue = GetPropertyValue(propertyName);
+            JsonElement[][]? propValue = GetPropertyValue<DateProperty>(propertyName);
             if (propValue is null) return null;
 
             BlockDateInformation rawDateValue = propValue[0][1]
