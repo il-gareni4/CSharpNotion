@@ -22,10 +22,10 @@ namespace CSharpNotion.Api.Request
     internal class QueryCollectionLoader
     {
         public LoaderReducer? Reducers { get; set; }
-        public string? SearchQuery { get; set; } = "";
+        public string SearchQuery { get; set; } = "";
         public LoaderSort[]? Sort { get; set; } = Array.Empty<LoaderSort>();
-        public string? Type { get; set; } = "reducer";
-        public string? UserTimeZone { get; set; } = "";
+        public string Type { get; set; } = "reducer";
+        public string UserTimeZone { get; set; } = "";
     }
 
     internal class LoaderReducer

@@ -42,7 +42,7 @@ namespace CSharpNotion.Entities
 
         public async Task<CollectionRowBlock> AddNewPageAsync()
         {
-            RecordMapBlockValue newBlock = Utils.CreateNewBlockValue<PageBlock>(SpaceId, CollectionId, "collection");
+            RecordMapBlockValue newBlock = Utils.CreateNewBlockValue<PageBlock>(Client, SpaceId, CollectionId, "collection");
             CollectionRowBlock newBlockInstance = new(Client, newBlock, await GetCollection());
             Client.OperationsToTransaction();
             Client.AddOperation(Api.OperationBuilder.FromBlockValueToSetOperation(newBlock));

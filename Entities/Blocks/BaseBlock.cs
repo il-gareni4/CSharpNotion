@@ -62,7 +62,7 @@ namespace CSharpNotion.Entities
         {
             if (ParentTable != "block") throw new InvalidOperationException("ParentTable is not 'block'");
             Client.OperationsToTransaction();
-            RecordMapBlockValue newBlock = Utils.CreateNewBlockValue<T>(SpaceId, ParentId);
+            RecordMapBlockValue newBlock = Utils.CreateNewBlockValue<T>(Client, SpaceId, ParentId);
             T newBlockInstance = Utils.ActivatorCreateNewBlock<T>(Client, newBlock);
             Client.AddOperation(Api.OperationBuilder.FromBlockValueToSetOperation(newBlock));
             Client.AddOperation(Api.OperationBuilder.ListInsertingOperation(whereInsert, ParentId, newBlock.Id!, Id));
@@ -130,7 +130,7 @@ namespace CSharpNotion.Entities
         /// <returns>New <typeparamref name="T"/></returns>
         public virtual T AppendBlock<T>() where T : BaseBlock
         {
-            RecordMapBlockValue newBlock = Utils.CreateNewBlockValue<T>(SpaceId, Id);
+            RecordMapBlockValue newBlock = Utils.CreateNewBlockValue<T>(Client, SpaceId, Id);
             T newBlockInstance = Utils.ActivatorCreateNewBlock<T>(Client, newBlock);
             Client.OperationsToTransaction();
             Client.AddOperation(Api.OperationBuilder.FromBlockValueToSetOperation(newBlock));
@@ -178,7 +178,7 @@ namespace CSharpNotion.Entities
             else if (index > ContentIds.Count || index < 0) throw new IndexOutOfRangeException();
 
             string? blockId = ContentIds.Count == 0 ? null : ContentIds[index];
-            RecordMapBlockValue newBlock = Utils.CreateNewBlockValue<T>(SpaceId, Id);
+            RecordMapBlockValue newBlock = Utils.CreateNewBlockValue<T>(Client, SpaceId, Id);
             T newBlockInstance = Utils.ActivatorCreateNewBlock<T>(Client, newBlock);
             Client.OperationsToTransaction();
             Client.AddOperation(Api.OperationBuilder.FromBlockValueToSetOperation(newBlock));
