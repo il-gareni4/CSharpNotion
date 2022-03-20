@@ -68,18 +68,21 @@ namespace CSharpNotion.Api.General
 
     internal class RecordMap
     {
-        [JsonPropertyName("space_view")]
-        public Dictionary<string, object>? SpaceView { get; set; }
+        //[JsonPropertyName("space_view")]
+        //public Dictionary<string, object>? SpaceView { get; set; }
 
-        public Dictionary<string, RecordMapBlock>? Block { get; set; }
+        public Dictionary<string, RecordMapRoleValue<RecordMapBlockValue>>? Block { get; set; }
 
-        public Dictionary<string, RecordMapCollection>? Collection { get; set; }
+        public Dictionary<string, RecordMapRoleValue<RecordMapCollectionValue>>? Collection { get; set; }
+
+        [JsonPropertyName("user_settings")]
+        public Dictionary<string, RecordMapRoleValue<RecordMapUserSettings>>? UserSettings { get; set; }
     }
 
-    internal class RecordMapCollection
+    internal class RecordMapRoleValue<T>
     {
         public string? Role { get; set; }
-        public RecordMapCollectionValue? Value { get; set; }
+        public T? Value { get; set; }
     }
 
     public class RecordMapCollectionValue
@@ -140,12 +143,6 @@ namespace CSharpNotion.Api.General
         public string? Id { get; set; }
         public string? Color { get; set; }
         public string? Value { get; set; }
-    }
-
-    internal class RecordMapBlock
-    {
-        public string? Role { get; set; }
-        public RecordMapBlockValue? Value { get; set; }
     }
 
     public class RecordMapBlockValue
@@ -236,5 +233,75 @@ namespace CSharpNotion.Api.General
         public string? Time { get; set; }
         public string? Unit { get; set; }
         public int Value { get; set; }
+    }
+
+    internal class RecordMapUserSettings
+    {
+        public string? Id { get; set; }
+        public UserSettings? Settings { get; set; }
+        public int Version { get; set; }
+    }
+
+    internal class UserSettings
+    {
+        [JsonPropertyName("cookie_consent")]
+        public CookieConsent? CookieConsent { get; set; }
+
+        public string? Locale { get; set; }
+        public string? Persona { get; set; }
+
+        [JsonPropertyName("preferred_locale")]
+        public string? PreferredLocale { get; set; }
+
+        [JsonPropertyName("preferred_locale_origin")]
+        public string? PreferredLocaleOrigin { get; set; }
+
+        [JsonPropertyName("seen_database_group_intro")]
+        public bool SeenDatabaseGroupIntro { get; set; }
+
+        [JsonPropertyName("seen_file_attachment_intro")]
+        public bool SeenFileAttachmentIntro { get; set; }
+
+        [JsonPropertyName("seen_views_intro_modal")]
+        public bool SeenViewsIntroModal { get; set; }
+
+        [JsonPropertyName("show_app_download")]
+        public bool ShowAppDownload { get; set; }
+
+        [JsonPropertyName("signup_time")]
+        public long SignupTime { get; set; }
+
+        public string? Source { get; set; }
+
+        [JsonPropertyName("start_day_of_week")]
+        public int StartDayOfWeek { get; set; }
+
+        [JsonPropertyName("time_zone")]
+        public string? TimeZone { get; set; }
+
+        public string? Type { get; set; }
+
+        [JsonPropertyName("used_android_app")]
+        public bool UsedAndroidApp { get; set; }
+
+        [JsonPropertyName("used_desktop_web_app")]
+        public bool UsedDesktopWebApp { get; set; }
+
+        [JsonPropertyName("used_windows_app")]
+        public bool UsedWindowsApp { get; set; }
+    }
+
+    internal class CookieConsent
+    {
+        public string? Id { get; set; }
+        public CookieConsentPermission? Permission { get; set; }
+    }
+
+    internal class CookieConsentPermission
+    {
+        public bool Necessary { get; set; }
+        public bool Performance { get; set; }
+        public bool Preference { get; set; }
+        public bool Targeting { get; set; }
     }
 }

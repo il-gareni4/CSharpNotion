@@ -36,7 +36,7 @@ namespace CSharpNotion
         public static string RecieveTitle(RecordMapBlockValue blockValue) =>
             blockValue?.Properties?.GetValueOrDefault("title")?.ElementAt(0)[0].GetString() ?? "";
 
-        public static RecordMapBlockValue CreateNewBlockValue<T>(string spaceId, string parentId) where T : BaseBlock
+        public static RecordMapBlockValue CreateNewBlockValue<T>(string spaceId, string parentId, string parentTable = "block") where T : BaseBlock
         {
             long createdTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
             return new RecordMapBlockValue()
@@ -47,7 +47,7 @@ namespace CSharpNotion
                 Version = 1,
                 Alive = true,
                 ParentId = parentId,
-                ParentTable = "block",
+                ParentTable = parentTable,
                 CreatedTime = createdTime,
                 LastEditedTime = createdTime
             };

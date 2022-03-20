@@ -34,11 +34,19 @@ namespace CSharpNotion.Entities
             RecordMap recordMap = (await QuickRequestSetup.QueryCollection(CollectionId, ViewIds[0], count)
                 .Send(Client.HttpClient).DeserializeJson<RecordMapResopnse>()).RecordMap!;
             if (recordMap.Block is null) throw new InvalidOperationException();
-            await GetCollection();
             List<CollectionRowBlock> blocks = new();
-            foreach (RecordMapBlock recordMapBlock in recordMap.Block.Values)
-                blocks.Add(new CollectionRowBlock(Client, recordMapBlock.Value!, Collection!));
+            foreach (var recordMapBlock in recordMap.Block.Values)
+                blocks.Add(new CollectionRowBlock(Client, recordMapBlock.Value!, await GetCollection()));
             return blocks.ToArray();
+        }
+
+        public async Task<CollectionRowBlock> AddNewPageAsync()
+        {
+            RecordMapBlockValue newBlock = Utils.CreateNewBlockValue<PageBlock>(SpaceId, CollectionId, "collection");
+            CollectionRowBlock newBlockInstance = new(Client, newBlock, await GetCollection());
+            Client.OperationsToTransaction();
+            Client.AddOperation(Api.OperationBuilder.FromBlockValueToSetOperation(newBlock));
+            return newBlockInstance;
         }
     }
 }

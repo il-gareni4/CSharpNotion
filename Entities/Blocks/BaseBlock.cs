@@ -111,7 +111,7 @@ namespace CSharpNotion.Entities
         {
             if (ContentIds.Count != Content.Count)
             {
-                Pointer[] pointers = ContentIds.Select((id) => new Api.General.Pointer(id, "block")).ToArray();
+                Pointer[] pointers = ContentIds.Select((id) => new Pointer(id, "block")).ToArray();
                 RecordMapResopnse syncResponse = await QuickRequestSetup.SyncRecordValues(pointers)
                     .Send(Client.HttpClient)
                     .DeserializeJson<RecordMapResopnse>();
