@@ -115,6 +115,34 @@ namespace CSharpNotion
             return blockInstance;
         }
 
+        public async Task<List<BaseBlock>> GetBlocksAsync(IEnumerable<string> blockIds)
+        {
+            CheckSetupState();
+            List<BaseBlock> resultBlocks = new();
+            blockIds = blockIds.Select((id) => Utils.ExtractId(id));
+            List<string> idsBlocksNeedsToFetch = new();
+
+            foreach (string blockId in blockIds)
+            {
+                BaseBlock? cachedBlock = _cache.GetCachedBlock(blockId);
+                if (cachedBlock is not null) resultBlocks.Add(cachedBlock);
+                else idsBlocksNeedsToFetch.Add(blockId);
+            }
+
+            IEnumerable<Pointer> blockPointers = idsBlocksNeedsToFetch.Select((id) => new Pointer(id, "block"));
+            RecordMapResopnse recordValues = await QuickRequestSetup.SyncRecordValues(blockPointers).Send(HttpClient).DeserializeJson<RecordMapResopnse>();
+            if (recordValues?.RecordMap?.Block is null || recordValues.RecordMap.Block.Count == 0) throw new InvalidDataException("Invalid response");
+            foreach (var blockRole in recordValues.RecordMap.Block.Values)
+            {
+                BaseBlock blockInstance = Utils.ConvertBlockFromResponse(this, blockRole.Value!);
+                _cache.CacheBlock(blockInstance);
+                resultBlocks.Add(blockInstance);
+            }
+            return resultBlocks;
+        }
+
+        internal void CacheBlock(BaseBlock block) => _cache.CacheBlock(block);
+
         internal void AddOperation(Operation operation) => _operations.Add(operation);
 
         internal void AddOperation(Operation operation, Action action)

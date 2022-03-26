@@ -65,7 +65,10 @@ namespace CSharpNotion.Entities
             RecordMapBlockValue newBlock = Utils.CreateNewBlockValue<T>(Client, SpaceId, ParentId);
             T newBlockInstance = Utils.ActivatorCreateNewBlock<T>(Client, newBlock);
             Client.AddOperation(Api.OperationBuilder.FromBlockValueToSetOperation(newBlock));
-            Client.AddOperation(Api.OperationBuilder.ListInsertingOperation(whereInsert, ParentId, newBlock.Id!, Id));
+            Client.AddOperation(
+                Api.OperationBuilder.ListInsertingOperation(whereInsert, ParentId, newBlock.Id!, Id),
+                () => Client.CacheBlock(newBlockInstance)
+            );
             return newBlockInstance;
         }
     }
@@ -109,16 +112,7 @@ namespace CSharpNotion.Entities
         /// <exception cref="InvalidDataException">Server response is invalid</exception>
         public virtual async Task<List<BaseBlock>> GetContent()
         {
-            if (ContentIds.Count != Content.Count)
-            {
-                Pointer[] pointers = ContentIds.Select((id) => new Pointer(id, "block")).ToArray();
-                RecordMapResopnse syncResponse = await QuickRequestSetup.SyncRecordValues(pointers)
-                    .Send(Client.HttpClient)
-                    .DeserializeJson<RecordMapResopnse>();
-                if (syncResponse?.RecordMap?.Block is null) throw new InvalidDataException("Invalid response");
-
-                Content = syncResponse.RecordMap.Block.Select((pair) => Utils.ConvertBlockFromResponse(Client, pair.Value.Value!)).ToList();
-            }
+            if (Content.Count != ContentIds.Count) Content = await Client.GetBlocksAsync(ContentIds);
             return Content;
         }
 
@@ -140,6 +134,7 @@ namespace CSharpNotion.Entities
                 {
                     ContentIds.Add(newBlock.Id!);
                     Content.Add(newBlockInstance);
+                    Client.CacheBlock(newBlockInstance);
                 }
             );
             return newBlockInstance;
@@ -166,7 +161,7 @@ namespace CSharpNotion.Entities
 
         /// <summary>
         /// Creates a new operation that
-        /// inserts a new <typeparamref name="T"/> before or after the child block at <paramref name="index"/>.
+        /// inserts a new <typeparamref name="T"/> at <paramref name="index"/>.
         /// </summary>
         /// <typeparam name="T">Type of block.</typeparam>
         /// <param name="index">The zero-based index at which block should be inserted.</param>
@@ -188,6 +183,7 @@ namespace CSharpNotion.Entities
                 {
                     ContentIds.Insert(index, newBlock.Id!);
                     if (Content.Count > index) Content.Insert(index, newBlockInstance);
+                    Client.CacheBlock(newBlockInstance);
                 }
             );
             return newBlockInstance;
