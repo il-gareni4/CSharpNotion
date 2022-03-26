@@ -18,6 +18,7 @@ namespace CSharpNotion
         private readonly List<Action> _actions = new();
         private bool _settedUp = false;
         private User? _user;
+        private CacheManager _cache;
 
         public User User
         {
@@ -26,7 +27,6 @@ namespace CSharpNotion
                 CheckSetupState();
                 return _user!;
             }
-            set => _user = value;
         }
 
         public static readonly JsonSerializerOptions SerializeOptions = new()
@@ -41,6 +41,7 @@ namespace CSharpNotion
         public Client(string tokenV2)
         {
             _tokenV2 = tokenV2;
+            _cache = new CacheManager();
             cookieContainer = new CookieContainer();
             cookieContainer.Add(new Cookie("token_v2", _tokenV2, "", "www.notion.so"));
             httpClientHandler = new() { CookieContainer = cookieContainer };
@@ -52,7 +53,10 @@ namespace CSharpNotion
             if (_settedUp) return this;
 
             RecordMap recordMap = (await QuickRequestSetup.GetSpaces().Send(HttpClient).DeserializeJson<Dictionary<string, RecordMap>>()).First().Value;
-            User = new User(recordMap.UserSettings!.First().Value.Value!);
+            _user = new User(recordMap.UserSettings!.First().Value.Value!);
+            if (recordMap.Block is not null)
+                foreach (var blockRole in recordMap.Block.Values)
+                    _cache.CacheBlock(Utils.ConvertBlockFromResponse(this, blockRole.Value!));
 
             _settedUp = true;
             return this;
@@ -67,38 +71,48 @@ namespace CSharpNotion
         /// Get a block by ID with type T. Type checking included
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="pageId">Id of block you need</param>
+        /// <param name="blockId">Id of block you need</param>
         /// <returns></returns>
         /// <exception cref="InvalidDataException"></exception>
         /// <exception cref="InvalidOperationException"></exception>
         /// <exception cref="HttpRequestException"></exception>
         /// <exception cref="TaskCanceledException"></exception>
-        public async Task<T> GetBlockAsync<T>(string pageId) where T : Entities.BaseBlock
+        public async Task<T> GetBlockAsync<T>(string blockId) where T : BaseBlock
         {
             CheckSetupState();
-            pageId = Utils.ExtractId(pageId);
-            RecordMapResopnse recordValues = await QuickRequestSetup.SyncRecordValues(pageId, "block").Send(HttpClient).DeserializeJson<RecordMapResopnse>();
+            blockId = Utils.ExtractId(blockId);
+            BaseBlock? cachedBlock = _cache.GetCachedBlock(blockId);
+            if (cachedBlock is not null) return (T)cachedBlock;
+
+            RecordMapResopnse recordValues = await QuickRequestSetup.SyncRecordValues(blockId, "block").Send(HttpClient).DeserializeJson<RecordMapResopnse>();
             if (recordValues?.RecordMap?.Block is null || recordValues.RecordMap.Block.Count == 0) throw new InvalidDataException("Invalid response");
             if (Constants.BlockTypeToTypeName.GetValueOrDefault(typeof(T)) != recordValues.RecordMap.Block.First().Value.Value!.Type) throw new InvalidDataException("Invalid type of block excepted");
-            return Utils.ActivatorCreateNewBlock<T>(this, recordValues.RecordMap.Block.First().Value.Value!);
+            T blockInstance = Utils.ActivatorCreateNewBlock<T>(this, recordValues.RecordMap.Block.First().Value.Value!);
+            _cache.CacheBlock(blockInstance);
+            return blockInstance;
         }
 
         /// <summary>
         /// Get a block by ID with <see cref="Entities.BaseBlock"/> type
         /// </summary>
-        /// <param name="pageId">Id of block you need</param>
+        /// <param name="blockId">Id of block you need</param>
         /// <returns></returns>
         /// <exception cref="InvalidDataException"></exception>
         /// <exception cref="InvalidOperationException"></exception>
         /// <exception cref="HttpRequestException"></exception>
         /// <exception cref="TaskCanceledException"></exception>
-        public async Task<BaseBlock> GetBlockAsync(string pageId)
+        public async Task<BaseBlock> GetBlockAsync(string blockId)
         {
             CheckSetupState();
-            pageId = Utils.ExtractId(pageId);
-            RecordMapResopnse recordValues = await QuickRequestSetup.SyncRecordValues(pageId, "block").Send(HttpClient).DeserializeJson<RecordMapResopnse>();
+            blockId = Utils.ExtractId(blockId);
+            BaseBlock? cachedBlock = _cache.GetCachedBlock(blockId);
+            if (cachedBlock is not null) return cachedBlock;
+
+            RecordMapResopnse recordValues = await QuickRequestSetup.SyncRecordValues(blockId, "block").Send(HttpClient).DeserializeJson<RecordMapResopnse>();
             if (recordValues?.RecordMap?.Block is null || recordValues.RecordMap.Block.Count == 0) throw new InvalidDataException("Invalid response");
-            return Utils.ConvertBlockFromResponse(this, recordValues.RecordMap.Block.First().Value.Value!);
+            BaseBlock blockInstance = Utils.ConvertBlockFromResponse(this, recordValues.RecordMap.Block.First().Value.Value!);
+            _cache.CacheBlock(blockInstance);
+            return blockInstance;
         }
 
         internal void AddOperation(Operation operation) => _operations.Add(operation);
