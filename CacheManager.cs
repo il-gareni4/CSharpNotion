@@ -4,7 +4,7 @@ namespace CSharpNotion
 {
     internal class CacheManager
     {
-        private const int MaxCachedBlockCount = 200;
+        private const int MaxCachedBlockCount = 250;
         private List<BaseBlock> _blocksList = new();
         private readonly Dictionary<string, BaseBlock> _blocksMap = new();
 

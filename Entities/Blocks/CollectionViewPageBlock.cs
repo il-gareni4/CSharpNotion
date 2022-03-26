@@ -21,7 +21,7 @@ namespace CSharpNotion.Entities
         {
             if (Collection is not null) return Collection;
 
-            RecordMap recordMap = (await QuickRequestSetup.SyncRecordValues(CollectionPointer).Send(Client.HttpClient)
+            RecordMap recordMap = (await ReqSetup.SyncRecordValues(CollectionPointer).Send(Client.HttpClient)
                                                     .DeserializeJson<RecordMapResopnse>()).RecordMap!;
             if (recordMap.Collection is null || !recordMap.Collection.ContainsKey(CollectionId)) throw new InvalidOperationException();
 
@@ -31,7 +31,7 @@ namespace CSharpNotion.Entities
 
         public async Task<CollectionRowBlock[]> GetPages(int count)
         {
-            RecordMap recordMap = (await QuickRequestSetup.QueryCollection(CollectionId, ViewIds[0], count)
+            RecordMap recordMap = (await ReqSetup.QueryCollection(CollectionId, ViewIds[0], count)
                 .Send(Client.HttpClient).DeserializeJson<RecordMapResopnse>()).RecordMap!;
             if (recordMap.Block is null) throw new InvalidOperationException();
             List<CollectionRowBlock> blocks = new();

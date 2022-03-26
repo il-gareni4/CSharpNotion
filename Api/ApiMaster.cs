@@ -9,7 +9,7 @@ namespace CSharpNotion.Api
         public static async Task<GetUploadFileUrlResponse> UploadFile(Client client, string blockId, string filePath)
         {
             FileInfo fileInfo = new(filePath);
-            GetUploadFileUrlResponse urlsResponse = await QuickRequestSetup.GetUploadFileUrl(new Pointer(blockId, "block"), fileInfo)
+            GetUploadFileUrlResponse urlsResponse = await ReqSetup.GetUploadFileUrl(new Pointer(blockId, "block"), fileInfo)
                                                                            .Send(client.HttpClient)
                                                                            .DeserializeJson<GetUploadFileUrlResponse>();
             if (urlsResponse.Url is null) throw new InvalidDataException($"Cannot get upload URL for this file: {filePath}");

@@ -4,7 +4,7 @@ using MimeTypes;
 
 namespace CSharpNotion
 {
-    internal static class QuickRequestSetup
+    internal static class ReqSetup
     {
         public static HttpRequestMessage SyncRecordValues(SyncRecordValues requestBody)
         {

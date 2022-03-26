@@ -2,7 +2,7 @@
 
 namespace CSharpNotion.Entities
 {
-    public class User
+    public class UserSettings
     {
         public string Id { get; init; }
         public int Version { get; protected set; }
@@ -24,7 +24,7 @@ namespace CSharpNotion.Entities
         public bool UsedDesktopWebApp { get; protected set; }
         public bool UsedWindowsApp { get; protected set; }
 
-        internal User(RecordMapUserSettings userValue)
+        internal UserSettings(RecordMapUserSettings userValue)
         {
             Id = userValue.Id ?? throw new ArgumentNullException();
             Version = userValue.Version;

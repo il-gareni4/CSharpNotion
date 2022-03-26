@@ -238,11 +238,11 @@ namespace CSharpNotion.Api.General
     internal class RecordMapUserSettings
     {
         public string? Id { get; set; }
-        public UserSettings? Settings { get; set; }
+        public UserSettingsValue? Settings { get; set; }
         public int Version { get; set; }
     }
 
-    internal class UserSettings
+    internal class UserSettingsValue
     {
         [JsonPropertyName("cookie_consent")]
         public CookieConsent? CookieConsent { get; set; }
