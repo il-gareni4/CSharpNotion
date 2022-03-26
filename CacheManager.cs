@@ -1,4 +1,4 @@
-﻿using CSharpNotion.Entities;
+﻿using CSharpNotion.Entities.Blocks;
 
 namespace CSharpNotion
 {

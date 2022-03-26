@@ -2,6 +2,7 @@
 using CSharpNotion.Api.Request;
 using CSharpNotion.Api.Response;
 using CSharpNotion.Entities;
+using CSharpNotion.Entities.Blocks;
 using System.Net;
 using System.Text.Json;
 

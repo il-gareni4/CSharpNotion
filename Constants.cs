@@ -1,4 +1,5 @@
-﻿using CSharpNotion.Entities.CollectionProperties;
+﻿using CSharpNotion.Entities.Blocks;
+using CSharpNotion.Entities.CollectionProperties;
 
 namespace CSharpNotion
 {
@@ -9,29 +10,29 @@ namespace CSharpNotion
 
         public static readonly Dictionary<Type, string> BlockTypeToTypeName = new()
         {
-            { typeof(Entities.PageBlock), "page" },
-            { typeof(Entities.TextBlock), "text" },
-            { typeof(Entities.HeaderBlock), "header" },
-            { typeof(Entities.SubHeaderBlock), "sub_header" },
-            { typeof(Entities.SubSubHeaderBlock), "sub_sub_header" },
-            { typeof(Entities.TodoBlock), "to_do" },
-            { typeof(Entities.BulletedListBlock), "bulleted_list" },
-            { typeof(Entities.NumberedListBlock), "numbered_list" },
-            { typeof(Entities.ToggleBlock), "toggle" },
-            { typeof(Entities.QuoteBlock), "quote" },
-            { typeof(Entities.CalloutBlock), "callout" },
-            { typeof(Entities.DividerBlock), "divider" },
-            { typeof(Entities.CodeBlock), "code" },
-            { typeof(Entities.AliasBlock), "alias" },
-            { typeof(Entities.EquationBlock), "equation" },
-            { typeof(Entities.SyncContainerBlock), "transclusion_container" },
-            { typeof(Entities.SyncReferenceBlock), "transclusion_reference" },
-            { typeof(Entities.BreadcrumbBlock), "breadcrumb" },
-            { typeof(Entities.ImageBlock), "image" },
-            { typeof(Entities.VideoBlock), "video" },
-            { typeof(Entities.FileBlock), "file" },
-            { typeof(Entities.TableOfContentsBlock), "table_of_contents" },
-            { typeof(Entities.CollectionViewPageBlock), "collection_view_page" }
+            { typeof(PageBlock), "page" },
+            { typeof(TextBlock), "text" },
+            { typeof(HeaderBlock), "header" },
+            { typeof(SubHeaderBlock), "sub_header" },
+            { typeof(SubSubHeaderBlock), "sub_sub_header" },
+            { typeof(TodoBlock), "to_do" },
+            { typeof(BulletedListBlock), "bulleted_list" },
+            { typeof(NumberedListBlock), "numbered_list" },
+            { typeof(ToggleBlock), "toggle" },
+            { typeof(QuoteBlock), "quote" },
+            { typeof(CalloutBlock), "callout" },
+            { typeof(DividerBlock), "divider" },
+            { typeof(CodeBlock), "code" },
+            { typeof(AliasBlock), "alias" },
+            { typeof(EquationBlock), "equation" },
+            { typeof(SyncContainerBlock), "transclusion_container" },
+            { typeof(SyncReferenceBlock), "transclusion_reference" },
+            { typeof(BreadcrumbBlock), "breadcrumb" },
+            { typeof(ImageBlock), "image" },
+            { typeof(VideoBlock), "video" },
+            { typeof(FileBlock), "file" },
+            { typeof(TableOfContentsBlock), "table_of_contents" },
+            { typeof(CollectionViewPageBlock), "collection_view_page" }
         };
 
         public static readonly Dictionary<string, Type> TypeNameToBlockType =

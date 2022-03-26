@@ -1,7 +1,7 @@
 ﻿using CSharpNotion.Api.General;
 using CSharpNotion.Api.Response;
 
-namespace CSharpNotion.Entities
+namespace CSharpNotion.Entities.Blocks
 {
     public class CollectionViewPageBlock : BaseBlock
     {

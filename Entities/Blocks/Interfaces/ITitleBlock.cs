@@ -1,4 +1,4 @@
-﻿namespace CSharpNotion.Entities.Interfaces
+﻿namespace CSharpNotion.Entities.Blocks.Interfaces
 {
     public interface ITitleBlock<T> where T : BaseBlock
     {

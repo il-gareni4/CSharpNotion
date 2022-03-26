@@ -2,7 +2,7 @@
 using CSharpNotion.Entities.CollectionProperties;
 using System.Text.Json;
 
-namespace CSharpNotion.Entities
+namespace CSharpNotion.Entities.Blocks
 {
     public class CollectionRowBlock : PageBlock
     {

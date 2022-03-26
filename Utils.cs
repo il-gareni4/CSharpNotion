@@ -1,5 +1,6 @@
 ﻿using CSharpNotion.Api.General;
 using CSharpNotion.Entities;
+using CSharpNotion.Entities.Blocks;
 using CSharpNotion.Entities.CollectionProperties;
 using System.Net.Http.Headers;
 using System.Reflection;

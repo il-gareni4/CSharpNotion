@@ -1,8 +1,7 @@
 ﻿using CSharpNotion.Api.General;
-using CSharpNotion.Api.Response;
-using CSharpNotion.Entities.Interfaces;
+using CSharpNotion.Entities.Blocks.Interfaces;
 
-namespace CSharpNotion.Entities
+namespace CSharpNotion.Entities.Blocks
 {
     public abstract class BaseBlock
     {

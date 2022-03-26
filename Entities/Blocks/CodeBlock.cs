@@ -1,7 +1,7 @@
 ﻿using CSharpNotion.Api.General;
-using CSharpNotion.Entities.Interfaces;
+using CSharpNotion.Entities.Blocks.Interfaces;
 
-namespace CSharpNotion.Entities
+namespace CSharpNotion.Entities.Blocks
 {
     public enum CodeBlockLanguage
     {

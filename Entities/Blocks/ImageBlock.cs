@@ -1,6 +1,6 @@
 ﻿using CSharpNotion.Api.General;
 
-namespace CSharpNotion.Entities
+namespace CSharpNotion.Entities.Blocks
 {
     public class ImageBlock : FileContainingBlock<ImageBlock>
     {

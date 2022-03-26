@@ -1,4 +1,4 @@
-﻿namespace CSharpNotion.Entities.Interfaces
+﻿namespace CSharpNotion.Entities.Blocks.Interfaces
 {
     public enum BlockColor
     {
