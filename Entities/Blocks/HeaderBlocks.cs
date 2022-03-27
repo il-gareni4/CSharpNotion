@@ -34,33 +34,21 @@ namespace CSharpNotion.Entities.Blocks
 
         public override HeaderBlock SetTitle(string title)
         {
-            Dictionary<string, object?> args = new() { { "title", new string[][] { new string[] { title } } } };
-            Client.AddOperation(
-                Api.OperationBuilder.MainOperation(Api.MainCommand.update, Id, "block", new string[] { "properties" }, args),
-                () => Title = title
-            );
+            SetProperty("title", new string[][] { new string[] { title } }, () => Title = title);
             return this;
         }
 
         public override HeaderBlock SetColor(BlockColor color)
         {
             if (color == Color) return this;
-            Dictionary<string, object?> args = new() { { "block_color", color.ToColorString() } };
-            Client.AddOperation(
-                Api.OperationBuilder.MainOperation(Api.MainCommand.update, Id, "block", new string[] { "format" }, args),
-                () => Color = color
-            );
+            SetFormat("block_color", color.ToColorString(), () => Color = color);
             return this;
         }
 
         public override HeaderBlock SetToggleable(bool toggleable)
         {
             if (toggleable == Toggleable) return this;
-            Dictionary<string, object?> args = new() { { "toggleable", toggleable } };
-            Client.AddOperation(
-                Api.OperationBuilder.MainOperation(Api.MainCommand.update, Id, "block", new string[] { "format" }, args),
-                () => Toggleable = toggleable
-            );
+            SetFormat("toggleable", toggleable, () => Toggleable = toggleable);
             return this;
         }
     }
@@ -72,33 +60,21 @@ namespace CSharpNotion.Entities.Blocks
 
         public override SubHeaderBlock SetTitle(string title)
         {
-            Dictionary<string, object?> args = new() { { "title", new string[][] { new string[] { title } } } };
-            Client.AddOperation(
-                Api.OperationBuilder.MainOperation(Api.MainCommand.update, Id, "block", new string[] { "properties" }, args),
-                () => Title = title
-            );
+            SetProperty("title", new string[][] { new string[] { title } }, () => Title = title);
             return this;
         }
 
         public override SubHeaderBlock SetColor(BlockColor color)
         {
             if (color == Color) return this;
-            Dictionary<string, object?> args = new() { { "block_color", color.ToColorString() } };
-            Client.AddOperation(
-                Api.OperationBuilder.MainOperation(Api.MainCommand.update, Id, "block", new string[] { "format" }, args),
-                () => Color = color
-            );
+            SetFormat("block_color", color.ToColorString(), () => Color = color);
             return this;
         }
 
         public override SubHeaderBlock SetToggleable(bool toggleable)
         {
             if (toggleable == Toggleable) return this;
-            Dictionary<string, object?> args = new() { { "toggleable", toggleable } };
-            Client.AddOperation(
-                Api.OperationBuilder.MainOperation(Api.MainCommand.update, Id, "block", new string[] { "format" }, args),
-                () => Toggleable = toggleable
-            );
+            SetFormat("toggleable", toggleable, () => Toggleable = toggleable);
             return this;
         }
     }
@@ -110,33 +86,21 @@ namespace CSharpNotion.Entities.Blocks
 
         public override SubSubHeaderBlock SetTitle(string title)
         {
-            Dictionary<string, object?> args = new() { { "title", new string[][] { new string[] { title } } } };
-            Client.AddOperation(
-                Api.OperationBuilder.MainOperation(Api.MainCommand.update, Id, "block", new string[] { "properties" }, args),
-                () => Title = title
-            );
+            SetProperty("title", new string[][] { new string[] { title } }, () => Title = title);
             return this;
         }
 
         public override SubSubHeaderBlock SetColor(BlockColor color)
         {
             if (color == Color) return this;
-            Dictionary<string, object?> args = new() { { "block_color", color.ToColorString() } };
-            Client.AddOperation(
-                Api.OperationBuilder.MainOperation(Api.MainCommand.update, Id, "block", new string[] { "format" }, args),
-                () => Color = color
-            );
+            SetFormat("block_color", color.ToColorString(), () => Color = color);
             return this;
         }
 
         public override SubSubHeaderBlock SetToggleable(bool toggleable)
         {
             if (toggleable == Toggleable) return this;
-            Dictionary<string, object?> args = new() { { "toggleable", toggleable } };
-            Client.AddOperation(
-                Api.OperationBuilder.MainOperation(Api.MainCommand.update, Id, "block", new string[] { "format" }, args),
-                () => Toggleable = toggleable
-            );
+            SetFormat("toggleable", toggleable, () => Toggleable = toggleable);
             return this;
         }
     }

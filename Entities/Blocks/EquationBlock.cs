@@ -10,11 +10,7 @@ namespace CSharpNotion.Entities.Blocks
 
         public override EquationBlock SetTitle(string title)
         {
-            Dictionary<string, object?> args = new() { { "title", new string[][] { new string[] { title } } } };
-            Client.AddOperation(
-                Api.OperationBuilder.MainOperation(Api.MainCommand.update, Id, "block", new string[] { "properties" }, args),
-                () => Title = title
-            );
+            SetProperty("title", new string[][] { new string[] { title } }, () => Title = title);
             return this;
         }
     }

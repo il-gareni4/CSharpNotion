@@ -41,6 +41,24 @@ namespace CSharpNotion.Entities.Blocks
             LastEditedById = blockValue?.LastEditedById;
         }
 
+        internal virtual void SetProperty(string name, IEnumerable<object?> value, Action afterCommit)
+        {
+            Dictionary<string, object?> args = new() { { name, value } };
+            Client.AddOperation(
+                Api.OperationBuilder.MainOperation(Api.MainCommand.update, Id, "block", new string[] { "properties" }, args),
+                afterCommit
+            );
+        }
+
+        internal virtual void SetFormat(string name, object? value, Action afterCommit)
+        {
+            Dictionary<string, object?> args = new() { { name, value } };
+            Client.AddOperation(
+                Api.OperationBuilder.MainOperation(Api.MainCommand.update, Id, "block", new string[] { "format" }, args),
+                afterCommit
+            );
+        }
+
         /// <summary>
         /// The same as <see cref="Client.Commit"/>
         /// </summary>

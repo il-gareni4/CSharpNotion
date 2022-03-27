@@ -33,18 +33,14 @@ namespace CSharpNotion.Entities.Blocks
             return (T)prop;
         }
 
-        private void SetProperty(string propertyId, IEnumerable<object>? propertyValue, bool wrapOuterArray = true)
+        private void SetProperty(string propertyId, IEnumerable<IEnumerable<object>>? propertyValue)
         {
             JsonElement[][]? resultPropValue = null;
             if (propertyValue is not null)
             {
-                if (wrapOuterArray) resultPropValue = new JsonElement[][] {
-                    propertyValue.Select((val) => JsonSerializer.SerializeToElement(val, Client.SerializeOptions)).ToArray()
-                };
-                else resultPropValue = propertyValue.Select(
-                    (val) => ((IEnumerable<object>)val).Select(
-                        (val2) => JsonSerializer.SerializeToElement(val2, Client.SerializeOptions)).ToArray()
-                    ).ToArray();
+                resultPropValue = propertyValue.Select((group) =>
+                    group.Select((groupValue) => JsonSerializer.SerializeToElement(groupValue, Client.SerializeOptions)).ToArray()
+                ).ToArray();
             }
             Dictionary<string, object?> args = new() { { propertyId, resultPropValue } };
             Client.AddOperation(
@@ -167,19 +163,19 @@ namespace CSharpNotion.Entities.Blocks
             return resultDateValue;
         }
 
-        private object[]? WarpToArrayOrNull(object? val) => val is null ? null : new object[] { val };
+        private object[][]? DoubleWrapToArrayOrNull(object? val) => val is null ? null : new object[][] { new object[] { val } };
 
         public CollectionRowBlock SetTextProperty(string propertyName, string? text)
         {
             TextProperty prop = GetProperty<TextProperty>(propertyName);
-            SetProperty(prop.Id, WarpToArrayOrNull(text));
+            SetProperty(prop.Id, DoubleWrapToArrayOrNull(text));
             return this;
         }
 
         public CollectionRowBlock SetNumberProperty(string propertyName, double? number)
         {
             NumberProperty prop = GetProperty<NumberProperty>(propertyName);
-            SetProperty(prop.Id, WarpToArrayOrNull(number));
+            SetProperty(prop.Id, DoubleWrapToArrayOrNull(number));
             return this;
         }
 
@@ -189,15 +185,16 @@ namespace CSharpNotion.Entities.Blocks
             if (string.IsNullOrEmpty(propertyValue)) SetProperty(prop.Id, null);
             else
             {
-                object[] resultPropertyValue = new object[]
-                {
-                    propertyValue,
-                    new string[][]
-                    {
-                        new string[]
+                object[][] resultPropertyValue = new object[][] {
+                    new object[] {
+                        propertyValue,
+                        new string[][]
                         {
-                            "a",
-                            propertyValue
+                            new string[]
+                            {
+                                "a",
+                                propertyValue
+                            }
                         }
                     }
                 };
@@ -212,15 +209,16 @@ namespace CSharpNotion.Entities.Blocks
             if (propertyValue is null) SetProperty(prop.Id, null);
             else
             {
-                object[] resultPropertyValue = new object[]
-                {
-                    "‣",
-                    new string[][]
-                    {
-                        new string[]
+                object[][] resultPropertyValue = new object[][] {
+                    new object[] {
+                        "‣",
+                        new string[][]
                         {
-                            linkType
-                        }.Concat(propertyValue).ToArray()
+                            new string[]
+                            {
+                                linkType
+                            }.Concat(propertyValue).ToArray()
+                        }
                     }
                 };
                 SetProperty(prop.Id, resultPropertyValue);
@@ -246,7 +244,7 @@ namespace CSharpNotion.Entities.Blocks
         public CollectionRowBlock SetCheckboxProperty(string propertyName, bool checkedState)
         {
             CheckboxProperty prop = GetProperty<CheckboxProperty>(propertyName);
-            SetProperty(prop.Id, WarpToArrayOrNull(checkedState ? "Yes" : "No"));
+            SetProperty(prop.Id, DoubleWrapToArrayOrNull(checkedState ? "Yes" : "No"));
             return this;
         }
 
@@ -257,7 +255,7 @@ namespace CSharpNotion.Entities.Blocks
             else
             {
                 prop.AddNewOption(element, Utils.RandomEnumValue<SelectOptionColor>());
-                SetProperty(prop.Id, WarpToArrayOrNull(element));
+                SetProperty(prop.Id, DoubleWrapToArrayOrNull(element));
             }
             return this;
         }
@@ -269,7 +267,7 @@ namespace CSharpNotion.Entities.Blocks
             else
             {
                 foreach (string option in elements) prop.AddNewOption(option, Utils.RandomEnumValue<SelectOptionColor>());
-                SetProperty(prop.Id, WarpToArrayOrNull(string.Join(",", elements)));
+                SetProperty(prop.Id, DoubleWrapToArrayOrNull(string.Join(",", elements)));
             }
             return this;
         }
@@ -290,13 +288,13 @@ namespace CSharpNotion.Entities.Blocks
             if (files is null) SetProperty(prop.Id, null);
             else
             {
-                List<object> resultPropValue = new();
+                List<object[]> resultPropValue = new();
                 foreach (FilePropertyValue file in files)
                 {
                     if (resultPropValue.Count > 0) resultPropValue.Add(new string[] { "," });
                     resultPropValue.Add(new object[] { file.Filename, new string[][] { new string[] { "a", file.Url } } });
                 }
-                SetProperty(prop.Id, resultPropValue, false);
+                SetProperty(prop.Id, resultPropValue);
             }
             return this;
         }
@@ -307,15 +305,17 @@ namespace CSharpNotion.Entities.Blocks
             if (dateValue is null) SetProperty(prop.Id, null);
             else
             {
-                object[] resultPropertyValue = new object[]
+                object[][] resultPropertyValue = new object[][]
                 {
-                    "‣",
-                    new object[][]
-                    {
-                        new object[]
+                    new object[] {
+                        "‣",
+                        new object[][]
                         {
-                            "d",
-                            dateValue.ToBlockDateInformation()
+                            new object[]
+                            {
+                                "d",
+                                dateValue.ToBlockDateInformation()
+                            }
                         }
                     }
                 };

@@ -15,33 +15,22 @@ namespace CSharpNotion.Entities.Blocks
         public override FileBlock SetFileUrl(string source)
         {
             if (source == Source) return this;
-            Dictionary<string, object?> propertiesArgs = new() { { "source", new string[][] { new string[] { source } } } };
-            Client.AddOperation(
-                Api.OperationBuilder.MainOperation(Api.MainCommand.update, Id, "block", new string[] { "properties" }, propertiesArgs),
-                () => Source = source
-            );
+            SetProperty("soruce", new string[][] { new string[] { source } }, () => Source = source);
+            SetFormat("display_source", source, () => DisplaySource = source);
             return this;
         }
 
         public FileBlock SetColor(BlockColor color)
         {
             if (color == Color) return this;
-            Dictionary<string, object?> args = new() { { "block_color", color.ToColorString() } };
-            Client.AddOperation(
-                Api.OperationBuilder.MainOperation(Api.MainCommand.update, Id, "block", new string[] { "format" }, args),
-                () => Color = color
-            );
+            SetFormat("block_color", color.ToColorString(), () => Color = color);
             return this;
         }
 
         public override FileBlock SetCaption(string caption)
         {
             if (caption == Caption) return this;
-            Dictionary<string, object?> args = new() { { "caption", new string[][] { new string[] { caption } } } };
-            Client.AddOperation(
-                Api.OperationBuilder.MainOperation(Api.MainCommand.update, Id, "block", new string[] { "properties" }, args),
-                () => Caption = caption
-            );
+            SetProperty("caption", new string[][] { new string[] { caption } }, () => Caption = caption);
             return this;
         }
     }

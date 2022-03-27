@@ -17,11 +17,7 @@ namespace CSharpNotion.Entities.Blocks
         public PageBlock SetCover(string? cover)
         {
             if (Cover == cover) return this;
-            Dictionary<string, object?> args = new() { { "page_cover", cover } };
-            Client.AddOperation(
-                Api.OperationBuilder.MainOperation(Api.MainCommand.update, Id, "block", new string[] { "format" }, args),
-                () => Cover = cover
-            );
+            SetFormat("page_cover", cover, () => Cover = cover);
             return this;
         }
 
@@ -29,43 +25,27 @@ namespace CSharpNotion.Entities.Blocks
         {
             if (coverPosition < 0 || coverPosition > 1) throw new ArgumentException("The cover position must be between 0 and 1 inclusive", "coverPosition");
             if (coverPosition == CoverPosition) return this;
-            Dictionary<string, object?> args = new() { { "page_cover_position", coverPosition } };
-            Client.AddOperation(
-                 Api.OperationBuilder.MainOperation(Api.MainCommand.update, Id, "block", new string[] { "format" }, args),
-                 () => CoverPosition = coverPosition
-             );
+            SetFormat("page_cover_position", coverPosition, () => CoverPosition = coverPosition);
             return this;
         }
 
         public override PageBlock SetTitle(string title)
         {
-            Dictionary<string, object?> args = new() { { "title", new string[][] { new string[] { title } } } };
-            Client.AddOperation(
-                Api.OperationBuilder.MainOperation(Api.MainCommand.update, Id, "block", new string[] { "properties" }, args),
-                () => Title = title
-            );
+            SetProperty("title", new string[][] { new string[] { title } }, () => Title = title);
             return this;
         }
 
         public override PageBlock SetColor(BlockColor color)
         {
             if (color == Color) return this;
-            Dictionary<string, object?> args = new() { { "block_color", color.ToColorString() } };
-            Client.AddOperation(
-                Api.OperationBuilder.MainOperation(Api.MainCommand.update, Id, "block", new string[] { "format" }, args),
-                () => Color = color
-            );
+            SetFormat("block_color", color.ToColorString(), () => Color = color);
             return this;
         }
 
         public override PageBlock SetIcon(string? icon)
         {
             if (Icon == icon) return this;
-            Dictionary<string, object?> args = new() { { "page_icon", icon } };
-            Client.AddOperation(
-                Api.OperationBuilder.MainOperation(Api.MainCommand.update, Id, "block", new string[] { "format" }, args),
-                () => Icon = icon
-            );
+            SetFormat("page_icon", icon, () => Icon = icon);
             return this;
         }
     }

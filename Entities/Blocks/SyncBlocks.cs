@@ -10,7 +10,7 @@ namespace CSharpNotion.Entities.Blocks
 
     public class SyncReferenceBlock : ContentBlock
     {
-        public Api.General.Pointer? SyncContainerPointer { get; protected set; }
+        public Pointer? SyncContainerPointer { get; protected set; }
         protected SyncContainerBlock? SyncContainerBlock { get; set; }
         public RecordMapBlockValue BlockValue { get; }
 
@@ -54,16 +54,12 @@ namespace CSharpNotion.Entities.Blocks
         {
             pageId = Utils.ExtractId(pageId);
             if (SyncContainerPointer is not null && SyncContainerPointer.Id == pageId && SyncContainerPointer.Table == "block") return this;
-            Api.General.Pointer newPointer = new(pageId, "block");
-            Dictionary<string, object?> args = new() { { "transclusion_reference_pointer", newPointer } };
-            Client.AddOperation(
-                Api.OperationBuilder.MainOperation(Api.MainCommand.update, Id, "block", new string[] { "format" }, args),
-                () =>
-                {
-                    SyncContainerPointer = newPointer;
-                    SyncContainerBlock = null;
-                }
-            );
+            Pointer newPointer = new(pageId, "block");
+            SetFormat("transclusion_reference_pointer", newPointer, () =>
+            {
+                SyncContainerPointer = newPointer;
+                SyncContainerBlock = null;
+            });
             return this;
         }
 

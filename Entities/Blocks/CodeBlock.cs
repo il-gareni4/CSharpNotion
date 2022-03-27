@@ -125,43 +125,27 @@ namespace CSharpNotion.Entities.Blocks
         public CodeBlock SetCaption(string caption)
         {
             if (caption == Caption) return this;
-            Dictionary<string, object?> args = new() { { "caption", new string[][] { new string[] { caption } } } };
-            Client.AddOperation(
-                Api.OperationBuilder.MainOperation(Api.MainCommand.update, Id, "block", new string[] { "properties" }, args),
-                () => Caption = caption
-            );
+            SetProperty("caption", new string[][] { new string[] { caption } }, () => Caption = caption);
             return this;
         }
 
         public CodeBlock SetWrapCode(bool wrapCode)
         {
             if (wrapCode == WrapCode) return this;
-            Dictionary<string, object?> args = new() { { "code_wrap", wrapCode } };
-            Client.AddOperation(
-                Api.OperationBuilder.MainOperation(Api.MainCommand.update, Id, "block", new string[] { "format" }, args),
-                () => WrapCode = wrapCode
-            );
+            SetFormat("code_wrap", wrapCode, () => WrapCode = wrapCode);
             return this;
         }
 
         public CodeBlock SetLanguage(CodeBlockLanguage language)
         {
             if (language == Language) return this;
-            Dictionary<string, object?> args = new() { { "language", new string[][] { new string[] { language.ToCodeNameString() } } } };
-            Client.AddOperation(
-                Api.OperationBuilder.MainOperation(Api.MainCommand.update, Id, "block", new string[] { "properties" }, args),
-                () => Language = language
-            );
+            SetProperty("language", new string[][] { new string[] { language.ToCodeNameString() } }, () => Language = language);
             return this;
         }
 
         public override CodeBlock SetTitle(string title)
         {
-            Dictionary<string, object?> args = new() { { "title", new string[][] { new string[] { title } } } };
-            Client.AddOperation(
-                Api.OperationBuilder.MainOperation(Api.MainCommand.update, Id, "block", new string[] { "properties" }, args),
-                () => Title = title
-            );
+            SetProperty("title", new string[][] { new string[] { title } }, () => Title = title);
             return this;
         }
     }

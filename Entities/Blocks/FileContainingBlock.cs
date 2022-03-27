@@ -48,7 +48,7 @@ namespace CSharpNotion.Entities.Blocks
                 Dictionary<string, object?> args = new() { { "title", new string[][] { new string[] { fileName } } } };
                 operations.Add(Api.OperationBuilder.MainOperation(Api.MainCommand.update, Id, "block", new string[] { "properties" }, args));
             }
-            (await ReqSetup.SaveTransactions(operations.ToArray()).Send(Client.HttpClient)).EnsureSuccessStatusCode();
+            (await ReqSetup.SaveTransactions(operations).Send(Client.HttpClient)).EnsureSuccessStatusCode();
             Source = DisplaySource = urlsResponse.Url;
         }
     }

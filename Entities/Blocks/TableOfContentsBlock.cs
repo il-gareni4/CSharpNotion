@@ -15,11 +15,7 @@ namespace CSharpNotion.Entities.Blocks
         public TableOfContentsBlock SetColor(BlockColor color)
         {
             if (color == Color) return this;
-            Dictionary<string, object?> args = new() { { "block_color", color.ToColorString() } };
-            Client.AddOperation(
-                Api.OperationBuilder.MainOperation(Api.MainCommand.update, Id, "block", new string[] { "format" }, args),
-                () => Color = color
-            );
+            SetFormat("block_color", color.ToColorString(), () => Color = color);
             return this;
         }
     }
