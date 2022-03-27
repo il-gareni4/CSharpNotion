@@ -34,8 +34,17 @@ namespace CSharpNotion
                 null, new object[] { client, blockValue }, null)!;
         }
 
-        public static string RecieveTitle(RecordMapBlockValue blockValue) =>
-            blockValue?.Properties?.GetValueOrDefault("title")?.ElementAt(0)[0].GetString() ?? "";
+        public static string RecieveTitle(RecordMapBlockValue blockValue)
+        {
+            if (blockValue?.Properties?.GetValueOrDefault("title") is null) return "";
+            string resultString = "";
+            foreach (JsonElement[] part in blockValue.Properties["title"])
+            {
+                string? str = part[0].GetString();
+                if (str != "‣") resultString += str;
+            }
+            return resultString;
+        }
 
         public static RecordMapBlockValue CreateNewBlockValue<T>(Client client, string spaceId, string parentId, string parentTable = "block") where T : BaseBlock
         {

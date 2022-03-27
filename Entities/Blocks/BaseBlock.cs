@@ -70,6 +70,11 @@ namespace CSharpNotion.Entities.Blocks
             );
             return newBlockInstance;
         }
+
+        public override string ToString()
+        {
+            return $"<{GetType().Name}, {Id}>";
+        }
     }
 
     public abstract class TitleContainingBlock<T> : BaseBlock, ITitleBlock<T> where T : BaseBlock
@@ -82,6 +87,11 @@ namespace CSharpNotion.Entities.Blocks
         }
 
         public abstract T SetTitle(string title);
+
+        public override string ToString()
+        {
+            return $"<{GetType().Name}, {Id}, Title: \"{Title}\">";
+        }
     }
 
     /// <summary>
@@ -270,6 +280,11 @@ namespace CSharpNotion.Entities.Blocks
         /// <param name="title">New title</param>
         /// <returns>This block</returns>
         public abstract T SetTitle(string title);
+
+        public override string ToString()
+        {
+            return $"<{GetType().Name}, {Id}, Title: \"{Title}\", Content count: {ContentIds.Count}>";
+        }
     }
 
     public abstract class ColorTitleContentBlock<T> : TitleContentBlock<T>, IColorBlock<T> where T : BaseBlock
