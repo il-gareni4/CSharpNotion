@@ -1,5 +1,6 @@
 ﻿using CSharpNotion.Entities.Blocks;
 using CSharpNotion.Entities.CollectionProperties;
+using System.Text.Json;
 
 namespace CSharpNotion
 {
@@ -7,6 +8,11 @@ namespace CSharpNotion
     {
         public const string BaseUrl = "https://www.notion.so";
         public const string ApiUrl = BaseUrl + "/api/v3";
+
+        public static readonly JsonSerializerOptions SerializeOptions = new()
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        };
 
         public static readonly Dictionary<Type, string> BlockTypeToTypeName = new()
         {

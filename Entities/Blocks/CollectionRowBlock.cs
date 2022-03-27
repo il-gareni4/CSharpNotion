@@ -39,7 +39,7 @@ namespace CSharpNotion.Entities.Blocks
             if (propertyValue is not null)
             {
                 resultPropValue = propertyValue.Select((group) =>
-                    group.Select((groupValue) => JsonSerializer.SerializeToElement(groupValue, Client.SerializeOptions)).ToArray()
+                    group.Select((groupValue) => JsonSerializer.SerializeToElement(groupValue, Constants.SerializeOptions)).ToArray()
                 ).ToArray();
             }
             Dictionary<string, object?> args = new() { { propertyId, resultPropValue } };
@@ -128,8 +128,8 @@ namespace CSharpNotion.Entities.Blocks
             if (propValue is null) return null;
 
             BlockDateInformation rawDateValue = propValue[0][1]
-                .Deserialize<JsonElement[][]>(Client.SerializeOptions)![0][1]
-                .Deserialize<BlockDateInformation>(Client.SerializeOptions)!;
+                .Deserialize<JsonElement[][]>(Constants.SerializeOptions)![0][1]
+                .Deserialize<BlockDateInformation>(Constants.SerializeOptions)!;
             DatePropertyValue resultDateValue;
 
             bool haveTime = rawDateValue.Type == "datetime" || rawDateValue.Type == "datetimerange";

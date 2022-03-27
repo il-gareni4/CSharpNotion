@@ -21,7 +21,7 @@ namespace CSharpNotion
 
         public static void SetHttpContent(ref HttpRequestMessage httpRequest, object data)
         {
-            httpRequest.Content = new StringContent(JsonSerializer.Serialize(data, Client.SerializeOptions));
+            httpRequest.Content = new StringContent(JsonSerializer.Serialize(data, Constants.SerializeOptions));
             httpRequest.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
         }
 

@@ -4,7 +4,6 @@ using CSharpNotion.Api.Response;
 using CSharpNotion.Entities;
 using CSharpNotion.Entities.Blocks;
 using System.Net;
-using System.Text.Json;
 
 namespace CSharpNotion
 {
@@ -18,7 +17,7 @@ namespace CSharpNotion
         private readonly List<Operation> _operations = new();
         private readonly List<Action> _actions = new();
         private bool _settedUp = false;
-        private UserSettings? _user;
+        private UserSettings? _userSettings;
         private readonly CacheManager _cache;
 
         public UserSettings User
@@ -26,14 +25,9 @@ namespace CSharpNotion
             get
             {
                 CheckSetupState();
-                return _user!;
+                return _userSettings!;
             }
         }
-
-        public static readonly JsonSerializerOptions SerializeOptions = new()
-        {
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-        };
 
         /// <summary>
         /// Initializes a new instance of Notion Client
@@ -58,7 +52,7 @@ namespace CSharpNotion
             if (_settedUp) return this;
 
             RecordMap recordMap = (await ReqSetup.GetSpaces().Send(HttpClient).DeserializeJson<Dictionary<string, RecordMap>>()).First().Value;
-            _user = new UserSettings((recordMap.UserSettings!).First().Value.Value!);
+            _userSettings = new UserSettings((recordMap.UserSettings!).First().Value.Value!);
             if (recordMap.Block is not null)
                 foreach (var blockRole in recordMap.Block.Values)
                     _cache.CacheBlock(Utils.ConvertBlockFromResponse(this, blockRole.Value!));

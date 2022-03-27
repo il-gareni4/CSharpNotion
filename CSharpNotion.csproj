@@ -10,4 +10,8 @@
     <PackageReference Include="MimeTypeMapOfficial" Version="1.0.17" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Api\General\" />
+  </ItemGroup>
+
 </Project>
