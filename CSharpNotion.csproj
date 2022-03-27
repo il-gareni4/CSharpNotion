@@ -4,6 +4,14 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Description>C# API client for Notion.so</Description>
+    <PackageTags>api, api-client, notion, notion-api</PackageTags>
+    <RepositoryUrl>https://github.com/il-gareni4/CSharpNotion</RepositoryUrl>
+    <PackageReadmeFile>README-NuGet.md</PackageReadmeFile>
+    <PackageIcon>CSharpNotion.png</PackageIcon>
+    <NeutralLanguage>en</NeutralLanguage>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
   <ItemGroup>
@@ -12,6 +20,24 @@
 
   <ItemGroup>
     <Folder Include="Api\General\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\..\..\..\Downloads\CSharpNotion.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="..\..\..\..\..\Downloads\README-NuGet.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>
