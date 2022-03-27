@@ -30,6 +30,7 @@ namespace CSharpNotion
             { typeof(BreadcrumbBlock), "breadcrumb" },
             { typeof(ImageBlock), "image" },
             { typeof(VideoBlock), "video" },
+            { typeof(AudioBlock), "audio" },
             { typeof(FileBlock), "file" },
             { typeof(TableOfContentsBlock), "table_of_contents" },
             { typeof(CollectionViewPageBlock), "collection_view_page" }
