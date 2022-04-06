@@ -1,4 +1,5 @@
 ﻿using CSharpNotion.Api.General;
+using CSharpNotion.Utilities;
 
 namespace CSharpNotion.Entities.Blocks
 {
@@ -52,7 +53,7 @@ namespace CSharpNotion.Entities.Blocks
 
         public SyncReferenceBlock SetSyncBlock(string pageId)
         {
-            pageId = Utils.ExtractId(pageId);
+            pageId = NotionUtils.ExtractId(pageId);
             if (SyncContainerPointer is not null && SyncContainerPointer.Id == pageId && SyncContainerPointer.Table == "block") return this;
             Pointer newPointer = new(pageId, "block");
             SetFormat("transclusion_reference_pointer", newPointer, () =>

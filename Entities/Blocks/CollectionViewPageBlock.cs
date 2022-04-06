@@ -1,5 +1,7 @@
 ﻿using CSharpNotion.Api.General;
 using CSharpNotion.Api.Response;
+using CSharpNotion.Extensions;
+using CSharpNotion.Utilities;
 
 namespace CSharpNotion.Entities.Blocks
 {
@@ -42,7 +44,7 @@ namespace CSharpNotion.Entities.Blocks
 
         public async Task<CollectionRowBlock> AddNewPageAsync()
         {
-            RecordMapBlockValue newBlock = Utils.CreateNewBlockValue<PageBlock>(Client, SpaceId, CollectionId, "collection");
+            RecordMapBlockValue newBlock = NotionUtils.CreateNewBlockValue<PageBlock>(Client, SpaceId, CollectionId, "collection");
             CollectionRowBlock newBlockInstance = new(Client, newBlock, await GetCollection());
             Client.OperationsToTransaction();
             Client.AddOperation(Api.OperationBuilder.FromBlockValueToSetOperation(newBlock));

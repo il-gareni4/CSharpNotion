@@ -1,5 +1,6 @@
 ﻿using CSharpNotion.Api.General;
 using CSharpNotion.Api.Response;
+using CSharpNotion.Extensions;
 using System.Net.Http.Headers;
 
 namespace CSharpNotion.Api

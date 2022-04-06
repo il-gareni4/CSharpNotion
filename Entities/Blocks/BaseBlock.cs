@@ -1,5 +1,6 @@
 ﻿using CSharpNotion.Api.General;
 using CSharpNotion.Entities.Blocks.Interfaces;
+using CSharpNotion.Utilities;
 
 namespace CSharpNotion.Entities.Blocks
 {
@@ -79,7 +80,7 @@ namespace CSharpNotion.Entities.Blocks
         {
             if (ParentTable != "block") throw new InvalidOperationException("ParentTable is not 'block'");
             Client.OperationsToTransaction();
-            RecordMapBlockValue newBlock = Utils.CreateNewBlockValue<T>(Client, SpaceId, ParentId);
+            RecordMapBlockValue newBlock = NotionUtils.CreateNewBlockValue<T>(Client, SpaceId, ParentId);
             T newBlockInstance = new BlocksFactory().CreateBlock<T>(Client, newBlock);
             Client.AddOperation(Api.OperationBuilder.FromBlockValueToSetOperation(newBlock));
             Client.AddOperation(
@@ -101,7 +102,7 @@ namespace CSharpNotion.Entities.Blocks
 
         protected TitleContainingBlock(Client client, RecordMapBlockValue blockValue) : base(client, blockValue)
         {
-            Title = Utils.RecieveTitle(blockValue);
+            Title = NotionUtils.RecieveTitle(blockValue);
         }
 
         public abstract T SetTitle(string title);
@@ -151,7 +152,7 @@ namespace CSharpNotion.Entities.Blocks
         /// <returns>New <typeparamref name="T"/></returns>
         public virtual T AppendBlock<T>() where T : BaseBlock
         {
-            RecordMapBlockValue newBlock = Utils.CreateNewBlockValue<T>(Client, SpaceId, Id);
+            RecordMapBlockValue newBlock = NotionUtils.CreateNewBlockValue<T>(Client, SpaceId, Id);
             T newBlockInstance = new BlocksFactory().CreateBlock<T>(Client, newBlock);
             Client.OperationsToTransaction();
             Client.AddOperation(Api.OperationBuilder.FromBlockValueToSetOperation(newBlock));
@@ -178,7 +179,7 @@ namespace CSharpNotion.Entities.Blocks
         /// <exception cref="ArgumentException">Block with <paramref name="blockId"/> isn't a child of current block.</exception>
         public virtual T InsertBlock<T>(Api.ListCommand whereInsert, string blockId) where T : BaseBlock
         {
-            blockId = Utils.ExtractId(blockId);
+            blockId = NotionUtils.ExtractId(blockId);
             int relativeBlockIndex = ContentIds.IndexOf(blockId);
             if (relativeBlockIndex == -1) throw new ArgumentException("Block with that ID isn't a child of current block", nameof(blockId));
 
@@ -200,7 +201,7 @@ namespace CSharpNotion.Entities.Blocks
             else if (index > ContentIds.Count || index < 0) throw new IndexOutOfRangeException();
 
             string? blockId = ContentIds.Count == 0 ? null : ContentIds[index];
-            RecordMapBlockValue newBlock = Utils.CreateNewBlockValue<T>(Client, SpaceId, Id);
+            RecordMapBlockValue newBlock = NotionUtils.CreateNewBlockValue<T>(Client, SpaceId, Id);
             T newBlockInstance = new BlocksFactory().CreateBlock<T>(Client, newBlock);
             Client.OperationsToTransaction();
             Client.AddOperation(Api.OperationBuilder.FromBlockValueToSetOperation(newBlock));
@@ -251,7 +252,7 @@ namespace CSharpNotion.Entities.Blocks
         /// <exception cref="ArgumentException">Block with <paramref name="blockId"/> isn't a child of current block.</exception>
         public virtual ContentBlock RemoveBlock(string blockId)
         {
-            blockId = Utils.ExtractId(blockId);
+            blockId = NotionUtils.ExtractId(blockId);
             int blockIndex = ContentIds.IndexOf(blockId);
             if (blockIndex == -1) throw new ArgumentException("Block with that ID isn't a child of current block", nameof(blockId));
             return RemoveBlock(blockIndex);
@@ -288,7 +289,7 @@ namespace CSharpNotion.Entities.Blocks
 
         protected TitleContentBlock(Client client, RecordMapBlockValue blockValue) : base(client, blockValue)
         {
-            Title = Utils.RecieveTitle(blockValue);
+            Title = NotionUtils.RecieveTitle(blockValue);
         }
 
         /// <summary>

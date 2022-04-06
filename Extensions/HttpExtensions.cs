@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 
-namespace CSharpNotion
+namespace CSharpNotion.Extensions
 {
     internal static class HttpExtensions
     {

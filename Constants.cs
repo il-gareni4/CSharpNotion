@@ -3,7 +3,7 @@ using System.Text.Json;
 
 namespace CSharpNotion
 {
-    public class Constants
+    public static class Constants
     {
         public const string BaseUrl = "https://www.notion.so";
         public const string ApiUrl = BaseUrl + "/api/v3";

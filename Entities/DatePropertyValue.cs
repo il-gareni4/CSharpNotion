@@ -1,4 +1,5 @@
 ﻿using CSharpNotion.Api.General;
+using CSharpNotion.Utilities;
 
 namespace CSharpNotion.Entities
 {
@@ -48,10 +49,10 @@ namespace CSharpNotion.Entities
         {
             return new BlockDateInformation()
             {
-                StartDate = Utils.FormatToNotionDate(StartDate),
-                StartTime = HaveTime ? Utils.FormatToNotionTime(StartDate) : null,
-                EndDate = EndDate is not null ? Utils.FormatToNotionDate(EndDate.Value) : null,
-                EndTime = EndDate is not null && HaveTime ? Utils.FormatToNotionTime(EndDate.Value) : null,
+                StartDate = NotionUtils.FormatToNotionDate(StartDate),
+                StartTime = HaveTime ? NotionUtils.FormatToNotionTime(StartDate) : null,
+                EndDate = EndDate is not null ? NotionUtils.FormatToNotionDate(EndDate.Value) : null,
+                EndTime = EndDate is not null && HaveTime ? NotionUtils.FormatToNotionTime(EndDate.Value) : null,
                 Reminder = Reminder is not null ? Reminder.ToBlockDateInformationReminder() : null,
                 TimeZone = TimeZone,
                 Type = HaveTime ? (EndDate is not null ? "datetimerange" : "datetime") : (EndDate is not null ? "daterange" : "date")
@@ -76,7 +77,7 @@ namespace CSharpNotion.Entities
         {
             return new BlockDateInformationReminder()
             {
-                Time = Time is not null ? Utils.FormatToNotionTime(Time.Value) : null,
+                Time = Time is not null ? NotionUtils.FormatToNotionTime(Time.Value) : null,
                 Value = Value,
                 Unit = Unit
             };

@@ -1,6 +1,7 @@
 ﻿using CSharpNotion.Api.General;
 using CSharpNotion.Api.Response;
 using CSharpNotion.Entities.Blocks.Interfaces;
+using CSharpNotion.Extensions;
 
 namespace CSharpNotion.Entities.Blocks
 {

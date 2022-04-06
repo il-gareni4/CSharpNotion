@@ -3,6 +3,8 @@ using CSharpNotion.Api.Request;
 using CSharpNotion.Api.Response;
 using CSharpNotion.Entities;
 using CSharpNotion.Entities.Blocks;
+using CSharpNotion.Extensions;
+using CSharpNotion.Utilities;
 using System.Net;
 
 namespace CSharpNotion
@@ -79,7 +81,7 @@ namespace CSharpNotion
         public async Task<T> GetBlockAsync<T>(string blockId) where T : BaseBlock
         {
             CheckSetupState();
-            blockId = Utils.ExtractId(blockId);
+            blockId = NotionUtils.ExtractId(blockId);
             BaseBlock? cachedBlock = _cache.GetCachedBlock(blockId);
             if (cachedBlock is not null) return (T)cachedBlock;
 
@@ -102,7 +104,7 @@ namespace CSharpNotion
         public async Task<BaseBlock> GetBlockAsync(string blockId)
         {
             CheckSetupState();
-            blockId = Utils.ExtractId(blockId);
+            blockId = NotionUtils.ExtractId(blockId);
             BaseBlock? cachedBlock = _cache.GetCachedBlock(blockId);
             if (cachedBlock is not null) return cachedBlock;
 
@@ -124,7 +126,7 @@ namespace CSharpNotion
         {
             CheckSetupState();
             List<BaseBlock> resultBlocks = new();
-            blockIds = blockIds.Select((id) => Utils.ExtractId(id));
+            blockIds = blockIds.Select((id) => NotionUtils.ExtractId(id));
             List<string> idsBlocksNeedsToFetch = new();
 
             foreach (string blockId in blockIds)

@@ -1,5 +1,6 @@
 ﻿using CSharpNotion.Api.General;
 using CSharpNotion.Entities.CollectionProperties;
+using CSharpNotion.Utilities;
 using System.Text.Json;
 
 namespace CSharpNotion.Entities.Blocks
@@ -254,7 +255,7 @@ namespace CSharpNotion.Entities.Blocks
             if (element is null) SetProperty(prop.Id, null);
             else
             {
-                prop.AddNewOption(element, Utils.RandomEnumValue<SelectOptionColor>());
+                prop.AddNewOption(element, EnumUtils.RandomEnumValue<SelectOptionColor>());
                 SetProperty(prop.Id, DoubleWrapToArrayOrNull(element));
             }
             return this;
@@ -266,7 +267,7 @@ namespace CSharpNotion.Entities.Blocks
             if (elements is null) SetProperty(prop.Id, null);
             else
             {
-                foreach (string option in elements) prop.AddNewOption(option, Utils.RandomEnumValue<SelectOptionColor>());
+                foreach (string option in elements) prop.AddNewOption(option, EnumUtils.RandomEnumValue<SelectOptionColor>());
                 SetProperty(prop.Id, DoubleWrapToArrayOrNull(string.Join(",", elements)));
             }
             return this;
@@ -274,12 +275,12 @@ namespace CSharpNotion.Entities.Blocks
 
         public CollectionRowBlock SetPersonProperty(string propertyName, IEnumerable<string>? userIds)
         {
-            return SetMultiLinkProperty<PersonProperty>(propertyName, "u", userIds?.Select((id) => Utils.ExtractId(id)));
+            return SetMultiLinkProperty<PersonProperty>(propertyName, "u", userIds?.Select((id) => NotionUtils.ExtractId(id)));
         }
 
         public CollectionRowBlock SetRelationProperty(string propertyName, IEnumerable<string>? pageIds)
         {
-            return SetMultiLinkProperty<RelationProperty>(propertyName, "p", pageIds?.Select((id) => Utils.ExtractId(id)));
+            return SetMultiLinkProperty<RelationProperty>(propertyName, "p", pageIds?.Select((id) => NotionUtils.ExtractId(id)));
         }
 
         public CollectionRowBlock SetFileProperty(string propertyName, IEnumerable<FilePropertyValue>? files)

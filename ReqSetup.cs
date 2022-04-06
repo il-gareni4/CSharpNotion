@@ -1,5 +1,6 @@
 ﻿using CSharpNotion.Api.General;
 using CSharpNotion.Api.Request;
+using CSharpNotion.Utilities;
 using MimeTypes;
 
 namespace CSharpNotion
@@ -9,7 +10,7 @@ namespace CSharpNotion
         public static HttpRequestMessage SyncRecordValues(SyncRecordValues requestBody)
         {
             HttpRequestMessage request = new(HttpMethod.Post, Constants.ApiUrl + "/syncRecordValues");
-            Utils.SetHttpContent(ref request, requestBody);
+            HttpUtils.SetHttpContent(ref request, requestBody);
             return request;
         }
 
@@ -39,7 +40,7 @@ namespace CSharpNotion
         public static HttpRequestMessage SaveTransactions(SaveTransactions requestBody)
         {
             HttpRequestMessage request = new(HttpMethod.Post, Constants.ApiUrl + "/saveTransactions");
-            Utils.SetHttpContent(ref request, requestBody);
+            HttpUtils.SetHttpContent(ref request, requestBody);
             return request;
         }
 
@@ -69,14 +70,14 @@ namespace CSharpNotion
                 Name = fileInfo.Name,
                 Record = pointer
             };
-            Utils.SetHttpContent(ref request, requestBody);
+            HttpUtils.SetHttpContent(ref request, requestBody);
             return request;
         }
 
         public static HttpRequestMessage QueryCollection(QueryCollection requestBody)
         {
             HttpRequestMessage request = new(HttpMethod.Post, Constants.ApiUrl + "/queryCollection");
-            Utils.SetHttpContent(ref request, requestBody);
+            HttpUtils.SetHttpContent(ref request, requestBody);
             return request;
         }
 

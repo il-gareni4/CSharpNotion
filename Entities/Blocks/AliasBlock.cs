@@ -1,4 +1,5 @@
 ﻿using CSharpNotion.Api.General;
+using CSharpNotion.Utilities;
 
 namespace CSharpNotion.Entities.Blocks
 {
@@ -13,7 +14,7 @@ namespace CSharpNotion.Entities.Blocks
 
         public AliasBlock SetBlockLink(string pageId, string table)
         {
-            pageId = Utils.ExtractId(pageId);
+            pageId = NotionUtils.ExtractId(pageId);
             if (AliasPointer is not null && AliasPointer.Id == pageId && AliasPointer.Table == table) return this;
             Pointer newPointer = new(pageId, table);
             SetFormat("alias_pointer", newPointer, () => AliasPointer = newPointer);

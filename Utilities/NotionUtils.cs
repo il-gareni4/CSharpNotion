@@ -1,25 +1,19 @@
 ﻿using CSharpNotion.Api.General;
 using CSharpNotion.Entities.Blocks;
-using System.Net.Http.Headers;
 using System.Text.Json;
 
-namespace CSharpNotion
+namespace CSharpNotion.Utilities
 {
-    internal static class Utils
+    internal sealed class NotionUtils
     {
-        private static Random _random = new();
+        private NotionUtils()
+        { }
 
         public static string ExtractId(string id)
         {
             if (!id.Contains('-'))
                 return id[..8] + "-" + id[8..12] + "-" + id[12..16] + "-" + id[16..20] + "-" + id[20..];
             return id;
-        }
-
-        public static void SetHttpContent(ref HttpRequestMessage httpRequest, object data)
-        {
-            httpRequest.Content = new StringContent(JsonSerializer.Serialize(data, Constants.SerializeOptions));
-            httpRequest.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
         }
 
         public static string RecieveTitle(RecordMapBlockValue blockValue)
@@ -34,7 +28,8 @@ namespace CSharpNotion
             return resultString;
         }
 
-        public static RecordMapBlockValue CreateNewBlockValue<T>(Client client, string spaceId, string parentId, string parentTable = "block") where T : BaseBlock
+        public static RecordMapBlockValue CreateNewBlockValue<T>(Client client, string spaceId, 
+            string parentId, string parentTable = "block") where T : BaseBlock
         {
             long createdTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
             return new RecordMapBlockValue()
@@ -53,12 +48,6 @@ namespace CSharpNotion
                 CreatedByTable = "notion_user",
                 LastEditedByTable = "notion_user"
             };
-        }
-
-        public static T RandomEnumValue<T>()
-        {
-            var v = Enum.GetValues(typeof(T));
-            return (T)v.GetValue(_random.Next(v.Length))!;
         }
 
         public static string FormatToNotionTime(int hour, int minute)
