@@ -25,15 +25,6 @@ namespace CSharpNotion
             httpRequest.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
         }
 
-        public static BaseBlock ConvertBlockFromResponse(Client client, RecordMapBlockValue blockValue)
-        {
-            if (blockValue.Type is null) throw new ArgumentNullException("blockValue.Type can't be null");
-            Type blockType = Constants.TypeNameToBlockType.GetValueOrDefault(blockValue.Type, typeof(DividerBlock));
-            return (BaseBlock)Activator.CreateInstance(blockType,
-                BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance,
-                null, new object[] { client, blockValue }, null)!;
-        }
-
         public static string RecieveTitle(RecordMapBlockValue blockValue)
         {
             if (blockValue?.Properties?.GetValueOrDefault("title") is null) return "";
@@ -53,7 +44,7 @@ namespace CSharpNotion
             {
                 Id = Guid.NewGuid().ToString(),
                 SpaceId = spaceId,
-                Type = Constants.BlockTypeToTypeName.GetValueOrDefault(typeof(T), "text"),
+                Type = Constants.NotionBlockTypes.GetValueOrDefault(typeof(T), "text"),
                 Version = 1,
                 Alive = true,
                 ParentId = parentId,
@@ -65,13 +56,6 @@ namespace CSharpNotion
                 CreatedByTable = "notion_user",
                 LastEditedByTable = "notion_user"
             };
-        }
-
-        public static T ActivatorCreateNewBlock<T>(Client client, RecordMapBlockValue blockValue)
-        {
-            return (T)Activator.CreateInstance(
-                typeof(T), BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance,
-                null, new object[] { client, blockValue }, null)!;
         }
 
         public static List<BaseProperty> ConvertSchemaToPropertiesList(Client client, Dictionary<string, CollectionValueSchemaElement> schema, Collection collection)

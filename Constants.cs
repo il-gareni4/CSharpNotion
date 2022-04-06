@@ -14,7 +14,7 @@ namespace CSharpNotion
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase
         };
 
-        public static readonly Dictionary<Type, string> BlockTypeToTypeName = new()
+        public static readonly Dictionary<Type, string> NotionBlockTypes = new()
         {
             { typeof(PageBlock), "page" },
             { typeof(TextBlock), "text" },
@@ -41,9 +41,6 @@ namespace CSharpNotion
             { typeof(TableOfContentsBlock), "table_of_contents" },
             { typeof(CollectionViewPageBlock), "collection_view_page" }
         };
-
-        public static readonly Dictionary<string, Type> TypeNameToBlockType =
-            new(BlockTypeToTypeName.Select((pair) => new KeyValuePair<string, Type>(pair.Value, pair.Key)));
 
         public static readonly Dictionary<string, Type> TypeNameToPropertyType = new()
         {

@@ -54,8 +54,11 @@ namespace CSharpNotion
             RecordMap recordMap = (await ReqSetup.GetSpaces().Send(HttpClient).DeserializeJson<Dictionary<string, RecordMap>>()).First().Value;
             _userSettings = new UserSettings((recordMap.UserSettings!).First().Value.Value!);
             if (recordMap.Block is not null)
+            {
+                BlocksFactory blocksFactory = new();
                 foreach (var blockRole in recordMap.Block.Values)
-                    _cache.CacheBlock(Utils.ConvertBlockFromResponse(this, blockRole.Value!));
+                    _cache.CacheBlock(blocksFactory.CreateBlock(blockRole.Value!.Type!, this, blockRole.Value!));
+            }
 
             _settedUp = true;
             return this;
@@ -82,10 +85,10 @@ namespace CSharpNotion
 
             RecordMapResopnse recordValues = await ReqSetup.SyncRecordValues(blockId, "block").Send(HttpClient).DeserializeJson<RecordMapResopnse>();
             if (recordValues?.RecordMap?.Block is null || recordValues.RecordMap.Block.Count == 0) throw new InvalidDataException("Invalid response");
-            string? needType = Constants.BlockTypeToTypeName.GetValueOrDefault(typeof(T));
+            string? needType = Constants.NotionBlockTypes.GetValueOrDefault(typeof(T));
             string blockType = recordValues.RecordMap.Block.First().Value.Value!.Type!;
             if (needType != blockType) throw new InvalidDataException($"Excepted type of block '{needType}', got '{blockType}'");
-            T blockInstance = Utils.ActivatorCreateNewBlock<T>(this, recordValues.RecordMap.Block.First().Value.Value!);
+            T blockInstance = new BlocksFactory().CreateBlock<T>(this, recordValues.RecordMap.Block.First().Value.Value!);
             _cache.CacheBlock(blockInstance);
             return blockInstance;
         }
@@ -105,7 +108,8 @@ namespace CSharpNotion
 
             RecordMapResopnse recordValues = await ReqSetup.SyncRecordValues(blockId, "block").Send(HttpClient).DeserializeJson<RecordMapResopnse>();
             if (recordValues?.RecordMap?.Block is null || recordValues.RecordMap.Block.Count == 0) throw new InvalidDataException("Invalid response");
-            BaseBlock blockInstance = Utils.ConvertBlockFromResponse(this, recordValues.RecordMap.Block.First().Value.Value!);
+            string blockType = recordValues.RecordMap.Block.First().Value.Value!.Type!;
+            BaseBlock blockInstance = new BlocksFactory().CreateBlock(blockType, this, recordValues.RecordMap.Block.First().Value.Value!);
             _cache.CacheBlock(blockInstance);
             return blockInstance;
         }
@@ -133,9 +137,10 @@ namespace CSharpNotion
             IEnumerable<Pointer> blockPointers = idsBlocksNeedsToFetch.Select((id) => new Pointer(id, "block"));
             RecordMapResopnse recordValues = await ReqSetup.SyncRecordValues(blockPointers).Send(HttpClient).DeserializeJson<RecordMapResopnse>();
             if (recordValues?.RecordMap?.Block is null || recordValues.RecordMap.Block.Count == 0) throw new InvalidDataException("Invalid response");
+            BlocksFactory blocksFactory = new();
             foreach (var blockRole in recordValues.RecordMap.Block.Values)
             {
-                BaseBlock blockInstance = Utils.ConvertBlockFromResponse(this, blockRole.Value!);
+                BaseBlock blockInstance = blocksFactory.CreateBlock(blockRole.Value!.Type!, this, blockRole.Value!);
                 _cache.CacheBlock(blockInstance);
                 resultBlocks.Add(blockInstance);
             }

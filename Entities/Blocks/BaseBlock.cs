@@ -80,7 +80,7 @@ namespace CSharpNotion.Entities.Blocks
             if (ParentTable != "block") throw new InvalidOperationException("ParentTable is not 'block'");
             Client.OperationsToTransaction();
             RecordMapBlockValue newBlock = Utils.CreateNewBlockValue<T>(Client, SpaceId, ParentId);
-            T newBlockInstance = Utils.ActivatorCreateNewBlock<T>(Client, newBlock);
+            T newBlockInstance = new BlocksFactory().CreateBlock<T>(Client, newBlock);
             Client.AddOperation(Api.OperationBuilder.FromBlockValueToSetOperation(newBlock));
             Client.AddOperation(
                 Api.OperationBuilder.ListInsertingOperation(whereInsert, ParentId, newBlock.Id!, Id),
@@ -152,7 +152,7 @@ namespace CSharpNotion.Entities.Blocks
         public virtual T AppendBlock<T>() where T : BaseBlock
         {
             RecordMapBlockValue newBlock = Utils.CreateNewBlockValue<T>(Client, SpaceId, Id);
-            T newBlockInstance = Utils.ActivatorCreateNewBlock<T>(Client, newBlock);
+            T newBlockInstance = new BlocksFactory().CreateBlock<T>(Client, newBlock);
             Client.OperationsToTransaction();
             Client.AddOperation(Api.OperationBuilder.FromBlockValueToSetOperation(newBlock));
             Client.AddOperation(
@@ -201,7 +201,7 @@ namespace CSharpNotion.Entities.Blocks
 
             string? blockId = ContentIds.Count == 0 ? null : ContentIds[index];
             RecordMapBlockValue newBlock = Utils.CreateNewBlockValue<T>(Client, SpaceId, Id);
-            T newBlockInstance = Utils.ActivatorCreateNewBlock<T>(Client, newBlock);
+            T newBlockInstance = new BlocksFactory().CreateBlock<T>(Client, newBlock);
             Client.OperationsToTransaction();
             Client.AddOperation(Api.OperationBuilder.FromBlockValueToSetOperation(newBlock));
             Client.AddOperation(
