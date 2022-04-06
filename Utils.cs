@@ -1,9 +1,6 @@
 ﻿using CSharpNotion.Api.General;
-using CSharpNotion.Entities;
 using CSharpNotion.Entities.Blocks;
-using CSharpNotion.Entities.CollectionProperties;
 using System.Net.Http.Headers;
-using System.Reflection;
 using System.Text.Json;
 
 namespace CSharpNotion
@@ -56,19 +53,6 @@ namespace CSharpNotion
                 CreatedByTable = "notion_user",
                 LastEditedByTable = "notion_user"
             };
-        }
-
-        public static List<BaseProperty> ConvertSchemaToPropertiesList(Client client, Dictionary<string, CollectionValueSchemaElement> schema, Collection collection)
-        {
-            List<BaseProperty> list = new();
-            foreach (KeyValuePair<string, CollectionValueSchemaElement> property in schema)
-            {
-                Type propertyType = Constants.TypeNameToPropertyType.GetValueOrDefault(property.Value.Type!, typeof(TextProperty));
-                list.Add((BaseProperty)Activator.CreateInstance(propertyType,
-                    BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance,
-                    null, new object[] { client, property, collection }, null)!);
-            }
-            return list;
         }
 
         public static T RandomEnumValue<T>()

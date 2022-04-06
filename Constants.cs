@@ -1,5 +1,4 @@
 ﻿using CSharpNotion.Entities.Blocks;
-using CSharpNotion.Entities.CollectionProperties;
 using System.Text.Json;
 
 namespace CSharpNotion
@@ -40,22 +39,6 @@ namespace CSharpNotion
             { typeof(FileBlock), "file" },
             { typeof(TableOfContentsBlock), "table_of_contents" },
             { typeof(CollectionViewPageBlock), "collection_view_page" }
-        };
-
-        public static readonly Dictionary<string, Type> TypeNameToPropertyType = new()
-        {
-            { "text", typeof(TextProperty) },
-            { "number", typeof(NumberProperty) },
-            { "url", typeof(UrlProperty) },
-            { "email", typeof(EmailProperty) },
-            { "phone_number", typeof(PhoneNumberProperty) },
-            { "checkbox", typeof(CheckboxProperty) },
-            { "select", typeof(SelectProperty) },
-            { "multi_select", typeof(MultiselectProperty) },
-            { "person", typeof(PersonProperty) },
-            { "relation", typeof(RelationProperty) },
-            { "file", typeof(FileProperty) },
-            { "date", typeof(DateProperty) }
         };
     }
 }

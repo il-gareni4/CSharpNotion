@@ -29,7 +29,9 @@ namespace CSharpNotion.Entities
             Version = collectionValue.Version;
             Migrated = collectionValue.Migrated;
 
-            Properties = Utils.ConvertSchemaToPropertiesList(client, collectionValue.Schema!, this);
+            PropertyFactory propertyFactory = new();
+            Properties = (from keyValue in collectionValue.Schema
+                select propertyFactory.CreateProperty(keyValue.Value.Name!, client, keyValue, this)).ToList();
         }
 
         internal BaseProperty? GetPropertyByName(string name)
